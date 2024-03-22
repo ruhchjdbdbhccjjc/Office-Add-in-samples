@@ -469,7 +469,7 @@ async function registerClickHandler() {
     //context.workbook.onSelectionChanged
     sheet.onSingleClicked.add((event) => {
       return Excel.run(async (context) => {
-        console.log("file  name " + filename);
+        //console.log("file  name " + filename);
         await postinstance();
         await setsharpposition();
         /*
