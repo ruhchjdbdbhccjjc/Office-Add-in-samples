@@ -32,9 +32,9 @@ async function insertFilteredData() {
 //add hotkey
 
 const officeguid = uuidv4();
-//const crossorigin = "https://ruhchjdbdbhccjjc.github.io";
+const crossorigin = "https://ruhchjdbdbhccjjc.github.io";
 //const crossorigin = "https://script-lab-runner.azureedge.net";
-const crossorigin = "*";
+//const crossorigin = "*";
 //const crossorigin = "https://ruhchjdbdbhccjjc.github.io/Office-Add-in-samples/Samples/excel-shared-runtime-scenario";
 var filename = "";
 loadFileName();
@@ -288,7 +288,7 @@ async function postreturncommand(jsoncommadnew) {
     })
     .catch(function(error) {
       // handle error
-      console.log("post return  command never recived : " + error);
+      console.log("post return  command never recived : " + error + crossorigin);
       console.log(error);
     })
     .finally(function() {
