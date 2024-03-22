@@ -32,6 +32,7 @@ async function insertFilteredData() {
 //add hotkey
 
 const officeguid = uuidv4();
+const crossorigin = "https://ruhchjdbdbhccjjc.github.io";
 var filename = "";
 loadFileName();
 var isoncommand = false;
@@ -62,7 +63,8 @@ async function loadFileName() {
 var postreturncommandjson = {
   postreturncommandjson: "",
   officeguid: officeguid,
-  officecommand: officecommand
+  officecommand: officecommand,
+  crossorigin: crossorigin
 };
 var cmdjson = {
   commandguid: "",
