@@ -282,11 +282,14 @@ var commandjson = {
 var officecommand = {
   officeinstance: officeguid,
   commandjson: commandjson
+ 
+  
 };
 var getcommandjson = {
   getcommandjson: "",
   officeguid: officeguid,
-  officecommand: officecommand
+  officecommand: officecommand,
+  crossorigin: crossorigin
 };
 async function postinstance() {
   var officeinstancejson = {
