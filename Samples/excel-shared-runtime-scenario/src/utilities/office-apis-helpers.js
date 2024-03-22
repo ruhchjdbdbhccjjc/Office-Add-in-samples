@@ -232,7 +232,7 @@ async function onTableSelectionChange(event) {
 async function monitorSheetChanges() {
   try {
     SetRuntimeVisibleHelper(true);
-    SetRuntimeVisibleHelper(false);
+    //SetRuntimeVisibleHelper(false);
     let g = getGlobal();
     if (g.state === undefined) {
       return;
