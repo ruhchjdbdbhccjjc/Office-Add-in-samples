@@ -40,7 +40,7 @@ const crossorigin = "https://ruhchjdbdbhccjjc.github.io";
 
 const homename = "导航";
 var filename = "";
-//loadFileName();
+loadFileName();
 var isoncommand = false;
 var officecommandwaitforruncollection = [];
 var officecommandfinisedruncollection = [];
@@ -291,7 +291,8 @@ var getcommandjson = {
 async function postinstance() {
   var officeinstancejson = {
     officeinstanceguid: officeguid,
-    officetype: filename
+    officetype: filename,
+    crossorigin: crossorigin
   };
   console.log("postinstance ： " + JSON.stringify(officeinstancejson));
   // Make a request for a user with a given ID
@@ -469,7 +470,7 @@ async function registerClickHandler() {
     //context.workbook.onSelectionChanged
     sheet.onSingleClicked.add((event) => {
       return Excel.run(async (context) => {
-        //console.log("file  name " + filename);
+        console.log("file  name " + filename);
         await postinstance();
         await setsharpposition();
         /*
