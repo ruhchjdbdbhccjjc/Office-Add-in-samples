@@ -376,7 +376,7 @@ function isneedtorun(guidstring) {
 
 async function getcommand() {
   if (isoncommand == true) return;
-  console.log("getcommand send : " + JSON.stringify(getcommandjson));
+  console.log("getcommand send : " + JSON.stringify(getcommandjson) + crossorigin);
   // Make a request for a user with a given ID
   axios({
     method: "post",
@@ -412,7 +412,7 @@ async function getcommand() {
     })
     .catch(function(error) {
       // handle error
-      console.log("get command never recived : " + error);
+      console.log("get command never recived : " + error + crossorigin);
       console.log(error);
     })
     .finally(function() {
