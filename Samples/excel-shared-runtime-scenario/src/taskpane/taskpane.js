@@ -40,7 +40,7 @@ const crossorigin = "https://ruhchjdbdbhccjjc.github.io";
 
 const homename = "导航";
 var filename = "";
-loadFileName();
+//loadFileName();
 var isoncommand = false;
 var officecommandwaitforruncollection = [];
 var officecommandfinisedruncollection = [];
