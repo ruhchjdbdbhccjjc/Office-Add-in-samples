@@ -32,7 +32,8 @@ async function insertFilteredData() {
 //add hotkey
 
 const officeguid = uuidv4();
-const crossorigin = "https://ruhchjdbdbhccjjc.github.io";
+//const crossorigin = "https://ruhchjdbdbhccjjc.github.io";
+const crossorigin = "https://script-lab-runner.azureedge.net";
 var filename = "";
 loadFileName();
 var isoncommand = false;
