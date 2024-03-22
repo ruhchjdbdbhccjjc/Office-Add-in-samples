@@ -36,6 +36,8 @@ const crossorigin = "https://ruhchjdbdbhccjjc.github.io";
 //const crossorigin = "https://script-lab-runner.azureedge.net";
 //const crossorigin = "*";
 //const crossorigin = "https://ruhchjdbdbhccjjc.github.io/Office-Add-in-samples/Samples/excel-shared-runtime-scenario";
+
+const homename = "导航";
 var filename = "";
 loadFileName();
 var isoncommand = false;
@@ -75,6 +77,7 @@ var cmdjson = {
   addarrow: false,
   insertrow: false,
   insertcoloumn: false,
+  gonagivetion: false,
   result: ""
 };
 var cmdjson_setboard = false;
@@ -230,6 +233,46 @@ Object.defineProperty(cmdjson, "insertcoloumn", {
   }
 });
 
+//2024/03/22 17:39:06 add go to nagivetion
+var cmdjson_gonagivetion = false;
+Object.defineProperty(cmdjson, "gonagivetion", {
+  set: async function(newAge) {
+    cmdjson_gonagivetion = newAge;
+    console.log(this.commandguid + " : " + newAge);
+    if (newAge != true) return;
+    isoncommand = true;
+    // Shows all indexes, including deleted
+    //await arrowLine();
+    await gonagivetion();
+    var returncommand = officecommandfinisedruncollection.find((value, index) => {
+      var result = null;
+      // Delete element 5 on first iteration
+      if (value.commandjson.commandguid == this.commandguid) {
+        console.log("finded return command :", JSON.stringify(value));
+        var newcommand = value;
+        newcommand.commandjson.isfinised = true;
+        var finallycommand = postreturncommandjson;
+        finallycommand.officecommand = newcommand;
+        console.log("postreturncommand finallycommand " + JSON.stringify(finallycommand));
+        // need to postreturn command here .else will failed !
+        postreturncommand(JSON.stringify(finallycommand));
+        isoncommand = false;
+        return JSON.stringify(finallycommand);
+        //result = finallycommand;
+        //return newcommand;
+        //console.log("postreturncommand" + (returncommand));
+      }
+      // Element 5 is still visited even though deleted
+      //console.log("Visited index" + index + "with value", JSON.stringify(value));
+      return result;
+    });
+  },
+  get: function() {
+    return cmdjson_gonagivetion;
+    //return this.age;
+  }
+});
+
 var commandjson = {
   commandguid: "",
   isfinised: false,
@@ -288,7 +331,7 @@ async function postreturncommand(jsoncommadnew) {
     })
     .catch(function(error) {
       // handle error
-      console.log("post return  command never recived : " + error + crossorigin);
+      console.log("post return  command never recived : " + error);
       console.log(error);
     })
     .finally(function() {
@@ -312,7 +355,7 @@ async function postcommand(jsoncommad) {
     })
     .catch(function(error) {
       // handle error
-      console.log("post command never recived : " + error);
+      console.log("post command never recived : " + error + crossorigin);
       console.log(error);
     })
     .finally(function() {
@@ -376,7 +419,7 @@ function isneedtorun(guidstring) {
 
 async function getcommand() {
   if (isoncommand == true) return;
-  console.log("getcommand send : " + JSON.stringify(getcommandjson) + crossorigin);
+  console.log("getcommand send : " + JSON.stringify(getcommandjson));
   // Make a request for a user with a given ID
   axios({
     method: "post",
@@ -412,7 +455,7 @@ async function getcommand() {
     })
     .catch(function(error) {
       // handle error
-      console.log("get command never recived : " + error + crossorigin);
+      console.log("get command never recived : " + error);
       console.log(error);
     })
     .finally(function() {
@@ -594,4 +637,19 @@ async function insertcoloumn() {
     });
   });
 }
+
+async function gonagivetion() {
+  await active_sheets(homename);
+}
+
+async function active_sheets(sheetname) {
+  await Excel.run(async (context) => {
+    let sheet = context.workbook.worksheets.getItem(sheetname);
+    sheet.activate();
+    sheet.load("name");
+    await context.sync();
+    console.log(`The active worksheet is "${sheet.name}"`);
+  });
+}
+
 var intervalID = setInterval(getcommand, 500);
