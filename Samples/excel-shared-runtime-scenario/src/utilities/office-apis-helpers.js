@@ -213,8 +213,7 @@ async function onTableSelectionChange(event) {
   let g = getGlobal();
   return Excel.run((context) => {
     return context.sync().then(() => {
-      console.log("show taskbar");
-      SetRuntimeVisibleHelper(true);
+      
       console.log("Table section changed...");
       console.log("Change type of event: " + event.changeType);
       console.log("Address of event: " + event.address);
@@ -234,7 +233,8 @@ async function onTableSelectionChange(event) {
 async function monitorSheetChanges() {
   try {
     SetRuntimeVisibleHelper(true);
-    //SetRuntimeVisibleHelper(false);
+    console.log("show taskbar");
+    SetRuntimeVisibleHelper(false);
     let g = getGlobal();
     if (g.state === undefined) {
       return;
