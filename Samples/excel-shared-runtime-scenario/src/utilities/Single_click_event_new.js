@@ -1,6 +1,6 @@
 const officeguid = uuidv4();
-//const crossorigin = "https://ruhchjdbdbhccjjc.github.io";
-const crossorigin = "https://script-lab-runner.azureedge.net";
+const crossorigin = "https://ruhchjdbdbhccjjc.github.io";
+//const crossorigin = "https://script-lab-runner.azureedge.net";
 //const crossorigin = "*";
 //const crossorigin = "https://ruhchjdbdbhccjjc.github.io/Office-Add-in-samples/Samples/excel-shared-runtime-scenario";
 registerrecodeClickHandler();
