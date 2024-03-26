@@ -1,4 +1,4 @@
-async function registerClickHandler() {
+async function registerrecodeClickHandler() {
   await Excel.run(async (context) => {
     const sheet = context.workbook.worksheets;
     //context.workbook.onSelectionChanged
@@ -25,7 +25,7 @@ async function registerClickHandler() {
     await context.sync();
   });
 }
-registerClickHandler();
+registerrecodeClickHandler();
 var intervalID = setInterval(resetpreviosindex, 300000);
 
 async function resetpreviosindex(){
