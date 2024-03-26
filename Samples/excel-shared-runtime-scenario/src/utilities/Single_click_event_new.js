@@ -1,11 +1,9 @@
-//add hotkey
-
 const officeguid = uuidv4();
-const crossorigin = "https://ruhchjdbdbhccjjc.github.io";
-//const crossorigin = "https://script-lab-runner.azureedge.net";
+//const crossorigin = "https://ruhchjdbdbhccjjc.github.io";
+const crossorigin = "https://script-lab-runner.azureedge.net";
 //const crossorigin = "*";
 //const crossorigin = "https://ruhchjdbdbhccjjc.github.io/Office-Add-in-samples/Samples/excel-shared-runtime-scenario";
-
+registerrecodeClickHandler();
 const homename = "导航";
 var filename = "";
 loadFileName();
@@ -47,8 +45,23 @@ var cmdjson = {
   insertrow: false,
   insertcoloumn: false,
   gonagivetion: false,
+
+  setnagition: false,
+
+  recoderange: "",
+  readrecoderange: "",
+  recodesheetrange: "",
+  readsheetrange: "",
+
+  rangeprevios: false,
+  rangesheetprevio: false,
+  rangepreviosindex: false,
+  rangesheetpreviosindex: false,
+  create_sheet_with_name: false,
+
   result: ""
 };
+
 var cmdjson_setboard = false;
 Object.defineProperty(cmdjson, "setboard", {
   set: async function(newAge) {
@@ -242,6 +255,393 @@ Object.defineProperty(cmdjson, "gonagivetion", {
   }
 });
 
+var cmdjson_setnagition = false;
+Object.defineProperty(cmdjson, "setnagition", {
+  set: async function(newAge) {
+    cmdjson_setnagition = newAge;
+    if (newAge != true) return;
+    isoncommand = true;
+    console.log(this.commandguid + " : " + newAge);
+    // Shows all indexes, including deleted
+    //await arrowLine();
+    await setnagition();
+    var returncommand = officecommandfinisedruncollection.find((value, index) => {
+      var result = null;
+      // Delete element 5 on first iteration
+      if (value.commandjson.commandguid == this.commandguid) {
+        console.log("finded return command :", JSON.stringify(value));
+        var newcommand = value;
+        newcommand.commandjson.isfinised = true;
+        var finallycommand = postreturncommandjson;
+        finallycommand.officecommand = newcommand;
+        console.log("postreturncommand finallycommand " + JSON.stringify(finallycommand));
+        // need to postreturn command here .else will failed !
+        postreturncommand(JSON.stringify(finallycommand));
+        isoncommand = false;
+        return JSON.stringify(finallycommand);
+        //result = finallycommand;
+        //return newcommand;
+        //console.log("postreturncommand" + (returncommand));
+      }
+      // Element 5 is still visited even though deleted
+      //console.log("Visited index" + index + "with value", JSON.stringify(value));
+      return result;
+    });
+  },
+  get: function() {
+    return cmdjson_setnagition;
+    //return this.age;
+  }
+});
+
+var cmdjson_recoderange = "";
+Object.defineProperty(cmdjson, "recoderange", {
+  set: async function(newAge) {
+    cmdjson_recoderange = newAge;
+    if (newAge == "") return;
+    isoncommand = true;
+    console.log(this.commandguid + " : " + newAge);
+    // Shows all indexes, including deleted
+    console.log("recoderange start recode ! ");
+    await recoderange(recodejsonname, "A1", newAge.toString());
+    var returncommand = officecommandfinisedruncollection.find((value, index) => {
+      var result = null;
+      // Delete element 5 on first iteration
+      if (value.commandjson.commandguid == this.commandguid) {
+        console.log("finded return command :", JSON.stringify(value));
+        var newcommand = value;
+        newcommand.commandjson.isfinised = true;
+        var finallycommand = postreturncommandjson;
+        finallycommand.officecommand = newcommand;
+        console.log("postreturncommand finallycommand " + JSON.stringify(finallycommand));
+        // need to postreturn command here .else will failed !
+        postreturncommand(JSON.stringify(finallycommand));
+        isoncommand = false;
+        return JSON.stringify(finallycommand);
+        //result = finallycommand;
+        //return newcommand;
+        //console.log("postreturncommand" + (returncommand));
+      }
+      // Element 5 is still visited even though deleted
+      //console.log("Visited index" + index + "with value", JSON.stringify(value));
+      return result;
+    });
+  },
+  get: function() {
+    return cmdjson_recoderange;
+    //return this.age;
+  }
+});
+
+var cmdjson_readrecoderange = "";
+Object.defineProperty(cmdjson, "readrecoderange", {
+  set: async function(newAge) {
+    cmdjson_readrecoderange = newAge;
+    //if (newAge != true) return;
+    isoncommand = true;
+    console.log(this.commandguid + " : " + newAge);
+    // Shows all indexes, including deleted
+    await readrecoderange(recodejsonname, "A1", newAge.toString());
+    var returncommand = officecommandfinisedruncollection.find((value, index) => {
+      var result = null;
+      // Delete element 5 on first iteration
+      if (value.commandjson.commandguid == this.commandguid) {
+        console.log("finded return command :", JSON.stringify(value));
+        var newcommand = value;
+        newcommand.commandjson.isfinised = true;
+        var finallycommand = postreturncommandjson;
+        finallycommand.officecommand = newcommand;
+        console.log("postreturncommand finallycommand " + JSON.stringify(finallycommand));
+        // need to postreturn command here .else will failed !
+        postreturncommand(JSON.stringify(finallycommand));
+        isoncommand = false;
+        return JSON.stringify(finallycommand);
+        //result = finallycommand;
+        //return newcommand;
+        //console.log("postreturncommand" + (returncommand));
+      }
+      // Element 5 is still visited even though deleted
+      //console.log("Visited index" + index + "with value", JSON.stringify(value));
+      return result;
+    });
+  },
+  get: function() {
+    return cmdjson_readrecoderange;
+    //return this.age;
+  }
+});
+
+var cmdjson_recodesheetrange = "";
+Object.defineProperty(cmdjson, "recodesheetrange", {
+  set: async function(newAge) {
+    cmdjson_recodesheetrange = newAge;
+    //if (newAge != true) return;
+    isoncommand = true;
+    console.log(this.commandguid + " : " + newAge);
+    // Shows all indexes, including deleted
+    await recodesheetrange(recodejsonname, "A1", newAge.toString());
+    var returncommand = officecommandfinisedruncollection.find((value, index) => {
+      var result = null;
+      // Delete element 5 on first iteration
+      if (value.commandjson.commandguid == this.commandguid) {
+        console.log("finded return command :", JSON.stringify(value));
+        var newcommand = value;
+        newcommand.commandjson.isfinised = true;
+        var finallycommand = postreturncommandjson;
+        finallycommand.officecommand = newcommand;
+        console.log("postreturncommand finallycommand " + JSON.stringify(finallycommand));
+        // need to postreturn command here .else will failed !
+        postreturncommand(JSON.stringify(finallycommand));
+        isoncommand = false;
+        return JSON.stringify(finallycommand);
+        //result = finallycommand;
+        //return newcommand;
+        //console.log("postreturncommand" + (returncommand));
+      }
+      // Element 5 is still visited even though deleted
+      //console.log("Visited index" + index + "with value", JSON.stringify(value));
+      return result;
+    });
+  },
+  get: function() {
+    return cmdjson_recodesheetrange;
+    //return this.age;
+  }
+});
+
+var cmdjson_readsheetrange = "";
+Object.defineProperty(cmdjson, "readsheetrange", {
+  set: async function(newAge) {
+    cmdjson_readsheetrange = newAge;
+    //if (newAge != true) return;
+    isoncommand = true;
+    console.log(this.commandguid + " : " + newAge);
+    // Shows all indexes, including deleted
+    //await arrowLine();
+    await readsheetrange(recodejsonname, "A1", newAge.toString());
+    var returncommand = officecommandfinisedruncollection.find((value, index) => {
+      var result = null;
+      // Delete element 5 on first iteration
+      if (value.commandjson.commandguid == this.commandguid) {
+        console.log("finded return command :", JSON.stringify(value));
+        var newcommand = value;
+        newcommand.commandjson.isfinised = true;
+        var finallycommand = postreturncommandjson;
+        finallycommand.officecommand = newcommand;
+        console.log("postreturncommand finallycommand " + JSON.stringify(finallycommand));
+        // need to postreturn command here .else will failed !
+        postreturncommand(JSON.stringify(finallycommand));
+        isoncommand = false;
+        return JSON.stringify(finallycommand);
+        //result = finallycommand;
+        //return newcommand;
+        //console.log("postreturncommand" + (returncommand));
+      }
+      // Element 5 is still visited even though deleted
+      //console.log("Visited index" + index + "with value", JSON.stringify(value));
+      return result;
+    });
+  },
+  get: function() {
+    return cmdjson_readsheetrange;
+    //return this.age;
+  }
+});
+var cmdjson_rangeprevios = false;
+Object.defineProperty(cmdjson, "rangeprevios", {
+  set: async function(newAge) {
+    cmdjson_rangeprevios = newAge;
+    if (newAge != true) return;
+    isoncommand = true;
+    console.log(this.commandguid + " : " + newAge);
+    // Shows all indexes, including deleted
+    //await arrowLine();
+    await readrecodeworkbookselection(recodeselectionjsonname, "C1", 0);
+    var returncommand = officecommandfinisedruncollection.find((value, index) => {
+      var result = null;
+      // Delete element 5 on first iteration
+      if (value.commandjson.commandguid == this.commandguid) {
+        console.log("finded return command :", JSON.stringify(value));
+        var newcommand = value;
+        newcommand.commandjson.isfinised = true;
+        var finallycommand = postreturncommandjson;
+        finallycommand.officecommand = newcommand;
+        console.log("postreturncommand finallycommand " + JSON.stringify(finallycommand));
+        // need to postreturn command here .else will failed !
+        postreturncommand(JSON.stringify(finallycommand));
+        isoncommand = false;
+        return JSON.stringify(finallycommand);
+        //result = finallycommand;
+        //return newcommand;
+        //console.log("postreturncommand" + (returncommand));
+      }
+      // Element 5 is still visited even though deleted
+      //console.log("Visited index" + index + "with value", JSON.stringify(value));
+      return result;
+    });
+  },
+  get: function() {
+    return cmdjson_rangeprevios;
+    //return this.age;
+  }
+});
+
+var cmdjson_rangesheetprevio = false;
+Object.defineProperty(cmdjson, "rangesheetprevio", {
+  set: async function(newAge) {
+    cmdjson_rangesheetprevio = newAge;
+    if (newAge != true) return;
+    isoncommand = true;
+    console.log(this.commandguid + " : " + newAge);
+    // Shows all indexes, including deleted
+    //await arrowLine();
+    await readsheetselection(recodeselectionjsonname, "C1", 0);
+    var returncommand = officecommandfinisedruncollection.find((value, index) => {
+      var result = null;
+      // Delete element 5 on first iteration
+      if (value.commandjson.commandguid == this.commandguid) {
+        console.log("finded return command :", JSON.stringify(value));
+        var newcommand = value;
+        newcommand.commandjson.isfinised = true;
+        var finallycommand = postreturncommandjson;
+        finallycommand.officecommand = newcommand;
+        console.log("postreturncommand finallycommand " + JSON.stringify(finallycommand));
+        // need to postreturn command here .else will failed !
+        postreturncommand(JSON.stringify(finallycommand));
+        isoncommand = false;
+        return JSON.stringify(finallycommand);
+        //result = finallycommand;
+        //return newcommand;
+        //console.log("postreturncommand" + (returncommand));
+      }
+      // Element 5 is still visited even though deleted
+      //console.log("Visited index" + index + "with value", JSON.stringify(value));
+      return result;
+    });
+  },
+  get: function() {
+    return cmdjson_rangesheetprevio;
+    //return this.age;
+  }
+});
+
+var cmdjson_rangepreviosindex = false;
+Object.defineProperty(cmdjson, "rangepreviosindex", {
+  set: async function(newAge) {
+    cmdjson_rangepreviosindex = newAge;
+    if (newAge != true) return;
+    isoncommand = true;
+    console.log(this.commandguid + " : " + newAge);
+    // Shows all indexes, including deleted
+    //await arrowLine();
+    await readrecodeworkbookselection(recodeselectionjsonname, "C1", previousindex);
+    var returncommand = officecommandfinisedruncollection.find((value, index) => {
+      var result = null;
+      // Delete element 5 on first iteration
+      if (value.commandjson.commandguid == this.commandguid) {
+        console.log("finded return command :", JSON.stringify(value));
+        var newcommand = value;
+        newcommand.commandjson.isfinised = true;
+        var finallycommand = postreturncommandjson;
+        finallycommand.officecommand = newcommand;
+        console.log("postreturncommand finallycommand " + JSON.stringify(finallycommand));
+        // need to postreturn command here .else will failed !
+        postreturncommand(JSON.stringify(finallycommand));
+        isoncommand = false;
+        return JSON.stringify(finallycommand);
+        //result = finallycommand;
+        //return newcommand;
+        //console.log("postreturncommand" + (returncommand));
+      }
+      // Element 5 is still visited even though deleted
+      //console.log("Visited index" + index + "with value", JSON.stringify(value));
+      return result;
+    });
+  },
+  get: function() {
+    return cmdjson_rangepreviosindex;
+    //return this.age;
+  }
+});
+
+var cmdjson_rangesheetpreviosindex = false;
+Object.defineProperty(cmdjson, "rangesheetpreviosindex", {
+  set: async function(newAge) {
+    cmdjson_rangesheetpreviosindex = newAge;
+    if (newAge != true) return;
+    isoncommand = true;
+    console.log(this.commandguid + " : " + newAge);
+    // Shows all indexes, including deleted
+    //await arrowLine();
+    await readsheetselection(recodeselectionjsonname, "C1", previousindex);
+    var returncommand = officecommandfinisedruncollection.find((value, index) => {
+      var result = null;
+      // Delete element 5 on first iteration
+      if (value.commandjson.commandguid == this.commandguid) {
+        console.log("finded return command :", JSON.stringify(value));
+        var newcommand = value;
+        newcommand.commandjson.isfinised = true;
+        var finallycommand = postreturncommandjson;
+        finallycommand.officecommand = newcommand;
+        console.log("postreturncommand finallycommand " + JSON.stringify(finallycommand));
+        // need to postreturn command here .else will failed !
+        postreturncommand(JSON.stringify(finallycommand));
+        isoncommand = false;
+        return JSON.stringify(finallycommand);
+        //result = finallycommand;
+        //return newcommand;
+        //console.log("postreturncommand" + (returncommand));
+      }
+      // Element 5 is still visited even though deleted
+      //console.log("Visited index" + index + "with value", JSON.stringify(value));
+      return result;
+    });
+  },
+  get: function() {
+    return cmdjson_rangesheetpreviosindex;
+    //return this.age;
+  }
+});
+
+var cmdjson_create_sheet_with_name = false;
+Object.defineProperty(cmdjson, "create_sheet_with_name", {
+  set: async function(newAge) {
+    cmdjson_create_sheet_with_name = newAge;
+    if (newAge != true) return;
+    isoncommand = true;
+    console.log(this.commandguid + " : " + newAge);
+    // Shows all indexes, including deleted
+    //await arrowLine();
+    await createsheetswithselectvalues();
+    var returncommand = officecommandfinisedruncollection.find((value, index) => {
+      var result = null;
+      // Delete element 5 on first iteration
+      if (value.commandjson.commandguid == this.commandguid) {
+        console.log("finded return command :", JSON.stringify(value));
+        var newcommand = value;
+        newcommand.commandjson.isfinised = true;
+        var finallycommand = postreturncommandjson;
+        finallycommand.officecommand = newcommand;
+        console.log("postreturncommand finallycommand " + JSON.stringify(finallycommand));
+        // need to postreturn command here .else will failed !
+        postreturncommand(JSON.stringify(finallycommand));
+        isoncommand = false;
+        return JSON.stringify(finallycommand);
+        //result = finallycommand;
+        //return newcommand;
+        //console.log("postreturncommand" + (returncommand));
+      }
+      // Element 5 is still visited even though deleted
+      //console.log("Visited index" + index + "with value", JSON.stringify(value));
+      return result;
+    });
+  },
+  get: function() {
+    return cmdjson_create_sheet_with_name;
+    //return this.age;
+  }
+});
+
 var commandjson = {
   commandguid: "",
   isfinised: false,
@@ -250,8 +650,6 @@ var commandjson = {
 var officecommand = {
   officeinstance: officeguid,
   commandjson: commandjson
- 
-  
 };
 var getcommandjson = {
   getcommandjson: "",
