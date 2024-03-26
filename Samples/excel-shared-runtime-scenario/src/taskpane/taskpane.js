@@ -7,6 +7,7 @@ Office.onReady((info) => {
     console.log("ensure state initialized from the office.initialize");
     isOfficeInitialized = true;
     registerClickHandler();
+    registerrecodeClickHandler();
     monitorSheetChanges();
 
     document.getElementById("connectService").onclick = connectService; // in office-apis-helpers.js
