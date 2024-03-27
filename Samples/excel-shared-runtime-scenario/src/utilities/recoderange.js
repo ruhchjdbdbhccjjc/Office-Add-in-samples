@@ -1,3 +1,51 @@
+$("#run").on("click", () => tryCatch(run));
+$("#recoderangid").on("click", () => tryCatch(run));
+
+$("#readrangid").on("click", () => tryCatch(readrangeidrun));
+$("#resheetrangid").on("click", () => tryCatch(resheetrangidrun));
+$("#readsheetid").on("click", () => tryCatch(readsheetidrun));
+
+$("#rangeprevios").on("click", () => tryCatch(rangepreviosrun));
+$("#rangesheetprevios").on("click", () => tryCatch(rangesheetpreviosrun));
+$("#rangepreviosindex").on("click", () => tryCatch(rangepreviosindexrun));
+$("#rangesheetpreviosindex").on("click", () => tryCatch(rangesheetpreviosindexrun));
+
+$("#resetpreviosindex").on("click", () => tryCatch(resetpreviosindex));
+
+async function run() {
+  await Excel.run(async (context) => {
+    const sheet = context.workbook.worksheets.getActiveWorksheet();
+    await recoderange(recodejsonname, "A1", "a");
+    //console.log("Your code goes here");
+
+    await context.sync();
+  });
+}
+
+async function readrangeidrun() {
+  await readrecoderange(recodejsonname, "A1", "a");
+}
+
+async function resheetrangidrun() {
+  await recodesheetrange(recodejsonname, "A1", "b");
+}
+async function readsheetidrun() {
+  await readsheetrange(recodejsonname, "A1", "b");
+}
+//2024/03/26 09:25:39 add workbook event
+async function rangepreviosrun() {
+  await readrecodeworkbookselection(recodeselectionjsonname, "C1", 0);
+}
+async function rangesheetpreviosrun() {
+  await readsheetselection(recodeselectionjsonname, "C1", 0);
+}
+async function rangepreviosindexrun() {
+  await readrecodeworkbookselection(recodeselectionjsonname, "C1", previousindex);
+}
+async function rangesheetpreviosindexrun() {
+  await readsheetselection(recodeselectionjsonname, "C1", previousindex);
+}
+
 async function registerrecodeClickHandler() {
   await Excel.run(async (context) => {
     const sheet = context.workbook.worksheets;
@@ -31,6 +79,16 @@ registerrecodeClickHandler();
 async function resetpreviosindex() {
   previousindex = 0;
 }
+
+async function resetrecodeinfomation(){
+  recodejsonname_address = "";
+  recodeselectionjsonname_address = "";
+  recodejsonname_json = "";
+  recodeselectionjsonname_json = "";
+
+
+} 
+
 
 /** Default helper for invoking an action and handling errors. */
 async function tryCatch(callback) {
@@ -160,6 +218,14 @@ async function readrecoderange(jsonname, address, id) {
       }
     } else {
       //need json.parse or will error
+      /*
+      let re_s_n = await get_s_n_by_address(recodejsonname_address);
+      let re_r = await get_r_by_address(recodejsonname_address);
+      let recoderange = context.workbook.worksheets.getItemOrNullObject(re_s_n);
+      await context.sync();
+      */
+
+     
       recodejsonvalue = Object.assign(JSON.parse(JSON.stringify(recodejson)), JSON.parse(recodejsonname_json));
       //console.log(`recodejsonvalue  ${JSON.stringify(recodejsonvalue)}`);
       let recoderangevalue_new = Array.from(
