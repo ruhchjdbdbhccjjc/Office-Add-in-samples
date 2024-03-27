@@ -1,11 +1,4 @@
-$("#register-click-handler").click(() => tryCatch(registerClickHandler));
-registerrecodeClickHandler();
-//var intervalID = setInterval(resetpreviosindex, 300000);
-$("#rangeprevios").click(() => tryCatch(rangeprevios_test));
-$("#click-handler").click(() => tryCatch(getcommand));
-async function rangeprevios_test() {
-  await readrecodeworkbookselection(recodeselectionjsonname, "C1", 0);
-}
+
 const officeguid = uuidv4();
 //const crossorigin = "https://ruhchjdbdbhccjjc.github.io";
 const crossorigin = "https://script-lab-runner.azureedge.net";
