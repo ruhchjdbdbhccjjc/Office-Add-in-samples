@@ -1,4 +1,3 @@
-
 $("#register-click-handler").click(() => tryCatch(registerClickHandler));
 registerrecodeClickHandler();
 //var intervalID = setInterval(resetpreviosindex, 300000);
@@ -68,7 +67,7 @@ var cmdjson = {
   rangesheetpreviosindex: false,
   create_sheet_with_name: false,
   resetpreviosindex: false,
-
+  resetrecodeinfomation:false,
   result: ""
 };
 
@@ -690,6 +689,45 @@ Object.defineProperty(cmdjson, "resetpreviosindex", {
     //return this.age;
   }
 });
+var cmdjson_resetrecodeinfomation = false;
+Object.defineProperty(cmdjson, "resetrecodeinfomation", {
+  set: async function (newAge) {
+    cmdjson_resetrecodeinfomation = newAge;
+    if (newAge != true) return;
+    isoncommand = true;
+    console.log(this.commandguid + " : " + newAge);
+    // Shows all indexes, including deleted
+    //await arrowLine();
+    await resetrecodeinfomation();
+    var returncommand = officecommandfinisedruncollection.find((value, index) => {
+      var result = null;
+      // Delete element 5 on first iteration
+      if (value.commandjson.commandguid == this.commandguid) {
+        console.log("finded return command :", JSON.stringify(value));
+        var newcommand = value;
+        newcommand.commandjson.isfinised = true;
+        var finallycommand = postreturncommandjson;
+        finallycommand.officecommand = newcommand;
+        console.log("postreturncommand finallycommand " + JSON.stringify(finallycommand));
+        // need to postreturn command here .else will failed !
+        postreturncommand(JSON.stringify(finallycommand));
+        isoncommand = false;
+        return JSON.stringify(finallycommand);
+        //result = finallycommand;
+        //return newcommand;
+        //console.log("postreturncommand" + (returncommand));
+      }
+      // Element 5 is still visited even though deleted
+      //console.log("Visited index" + index + "with value", JSON.stringify(value));
+      return result;
+    });
+  },
+  get: function () {
+    return cmdjson_resetrecodeinfomation;
+    //return this.age;
+  }
+});
+
 
 var commandjson = {
   commandguid: "",
