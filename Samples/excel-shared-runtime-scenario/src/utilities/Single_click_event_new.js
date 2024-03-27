@@ -1,9 +1,18 @@
+
+$("#register-click-handler").click(() => tryCatch(registerClickHandler));
+registerrecodeClickHandler();
+//var intervalID = setInterval(resetpreviosindex, 300000);
+$("#rangeprevios").click(() => tryCatch(rangeprevios_test));
+$("#click-handler").click(() => tryCatch(getcommand));
+async function rangeprevios_test() {
+  await readrecodeworkbookselection(recodeselectionjsonname, "C1", 0);
+}
 const officeguid = uuidv4();
-const crossorigin = "https://ruhchjdbdbhccjjc.github.io";
-//const crossorigin = "https://script-lab-runner.azureedge.net";
+//const crossorigin = "https://ruhchjdbdbhccjjc.github.io";
+const crossorigin = "https://script-lab-runner.azureedge.net";
 //const crossorigin = "*";
 //const crossorigin = "https://ruhchjdbdbhccjjc.github.io/Office-Add-in-samples/Samples/excel-shared-runtime-scenario";
-//registerrecodeClickHandler();
+
 const homename = "导航";
 var filename = "";
 loadFileName();
@@ -58,6 +67,7 @@ var cmdjson = {
   rangepreviosindex: false,
   rangesheetpreviosindex: false,
   create_sheet_with_name: false,
+  resetpreviosindex: false,
 
   result: ""
 };
@@ -642,6 +652,45 @@ Object.defineProperty(cmdjson, "create_sheet_with_name", {
   }
 });
 
+var cmdjson_resetpreviosindex = false;
+Object.defineProperty(cmdjson, "resetpreviosindex", {
+  set: async function(newAge) {
+    cmdjson_resetpreviosindex = newAge;
+    if (newAge != true) return;
+    isoncommand = true;
+    console.log(this.commandguid + " : " + newAge);
+    // Shows all indexes, including deleted
+    //await arrowLine();
+    await resetpreviosindex();
+    var returncommand = officecommandfinisedruncollection.find((value, index) => {
+      var result = null;
+      // Delete element 5 on first iteration
+      if (value.commandjson.commandguid == this.commandguid) {
+        console.log("finded return command :", JSON.stringify(value));
+        var newcommand = value;
+        newcommand.commandjson.isfinised = true;
+        var finallycommand = postreturncommandjson;
+        finallycommand.officecommand = newcommand;
+        console.log("postreturncommand finallycommand " + JSON.stringify(finallycommand));
+        // need to postreturn command here .else will failed !
+        postreturncommand(JSON.stringify(finallycommand));
+        isoncommand = false;
+        return JSON.stringify(finallycommand);
+        //result = finallycommand;
+        //return newcommand;
+        //console.log("postreturncommand" + (returncommand));
+      }
+      // Element 5 is still visited even though deleted
+      //console.log("Visited index" + index + "with value", JSON.stringify(value));
+      return result;
+    });
+  },
+  get: function() {
+    return cmdjson_resetpreviosindex;
+    //return this.age;
+  }
+});
+
 var commandjson = {
   commandguid: "",
   isfinised: false,
@@ -1020,6 +1069,18 @@ async function active_sheets(sheetname) {
     sheet.load("name");
     await context.sync();
     console.log(`The active worksheet is "${sheet.name}"`);
+
+    /*
+    let recodeSheet = context.workbook.worksheets.getItemOrNullObject(sheetname);
+    //recodeSheet.activate();
+
+    await context.sync();
+    if (!recodeSheet.isNullObject) {
+      recodeSheet.activate();
+     // recodeSheet.getRange("A1").select();
+      //console.log(`selected recode sheetrange ${codeinfomation.address}`);
+    }
+    */
   });
 }
 
