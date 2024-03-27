@@ -5,11 +5,11 @@ async function registerrecodeClickHandler() {
     //sheet.onSingleClicked.add((event) => {
     context.workbook.onSelectionChanged.add((event) => {
       return Excel.run(async (context) => {
-        //console.log("onSelectionChanged " + event.workbook);
+        console.log("onSelectionChanged " + event.workbook);
         let selectedtime = await getdetailtime("selection changed : ");
-        await recodesheetrange(recodeselectionjsonname,"C1",selectedtime);
+        await recodesheetrange(recodeselectionjsonname, "C1", selectedtime);
         await recoderange(recodeselectionjsonname, "C1", selectedtime);
-        
+
         /*
         //console.log(
           `Click detected at ${event.address} (pixel offset from upper-left cell corner: ${event.offsetX}, ${event.offsetY})`
@@ -26,12 +26,10 @@ async function registerrecodeClickHandler() {
   });
 }
 registerrecodeClickHandler();
-var intervalID = setInterval(resetpreviosindex, 300000);
+//var intervalID = setInterval(resetpreviosindex, 180000);
 
-async function resetpreviosindex(){
-  previousindex = 0 ;
-
-
+async function resetpreviosindex() {
+  previousindex = 0;
 }
 
 /** Default helper for invoking an action and handling errors. */
@@ -47,6 +45,10 @@ async function tryCatch(callback) {
 const recodesheetname = "recode";
 const recodejsonname = "recodejson";
 const recodeselectionjsonname = "recodeselectionjson";
+var recodejsonname_address = "";
+var recodeselectionjsonname_address = "";
+var recodejsonname_json = "";
+var recodeselectionjsonname_json = "";
 
 var recoderangejson = {
   time: "",
@@ -81,262 +83,93 @@ var recodejson = {
   recodesheetjsonarraycollection: recodesheetjsonarraycollection
 };
 
-async function readrecoderange(jsonname,address,id) {
+async function readrecoderange(jsonname, address, id) {
   await Excel.run(async (context) => {
-    let dataSheet = context.workbook.worksheets.getItemOrNullObject(recodesheetname);
-
-    await context.sync();
-    if (dataSheet.isNullObject) {
-      dataSheet = context.workbook.worksheets.add(recodesheetname);
-    }
-    dataSheet.position = 0;
-    let searchRange = dataSheet.getUsedRange();
-    let foundRange = searchRange.findOrNullObject(jsonname, {
-      completeMatch: true, // Match the whole cell value.
-      matchCase: false, // Don't match case.
-      searchDirection: Excel.SearchDirection.forward // Start search at the beginning of the range.
-    });
-
-    foundRange.load("address,values");
-    //let activesheet = context.workbook.worksheets.getActiveWorksheet();
-
-    await context.sync();
-
-    //console.log("after foundRange ");
-    let recodejsonaddress = "";
-    let recodejsonva = "";
-    if (foundRange.isNullObject) {
-      dataSheet.getRange(address).values = [[jsonname]];
-      recodejsonaddress = address;
-      recodejsonva = "";
-      //console.log(`don't find ${jsonname}`);
-    } else {
-      recodejsonaddress = await get_r_by_address(foundRange.address.toString());
-      recodejsonva = foundRange.values[0][0];
-      //recodejsonaddress = foundRange.address.toString();
-    }
-    //console.log(`recodejsonaddress ${recodejsonaddress} ${recodejsonva}`);
-    let recodejsonrange = dataSheet.getRange(recodejsonaddress);
-    let recodejsonvaluerange = recodejsonrange.getOffsetRange(1, 0);
-    recodejsonvaluerange.load("values,valueTypes");
-
-    await context.sync();
-
-    var recodejsonvalue = recodejsonvaluerange.values[0][0];
-    //console.log(`recodejsonvalue ${recodejsonvalue}`);
-    if (recodejsonvaluerange.valueTypes[0][0] === Excel.RangeValueType.empty) {
-      let codejson = recodejson;
-      recodejsonvalue = JSON.stringify(codejson);
-      //codejson.recoderangejsonarray.array.push(selectedinfomation);
-    }
-    //console.log(`object parse `);
-
-    //need json.parse or will error
-    recodejsonvalue = Object.assign(JSON.parse(JSON.stringify(recodejson)), JSON.parse(recodejsonvalue));
-    //console.log(`recodejsonvalue  ${JSON.stringify(recodejsonvalue)}`);
-    let recoderangevalue_new = Array.from(
-      recodejsonvalue.recoderangejsonarray.array,
-      (element) => (element = Object.assign(JSON.parse(JSON.stringify(recoderangejson)), element))
-      //(element) => //console.log("element " + JSON.stringify(element))
-    );
-
-    //console.log("recoderangevalue_new " + JSON.stringify(recoderangevalue_new));
-    //return;
-    let codeinfomation = recoderangevalue_new.find((element) => element.id == id);
-    if (codeinfomation != undefined) {
-      let recodeSheet = context.workbook.worksheets.getItemOrNullObject(codeinfomation.sheetname);
+    if (recodejsonname_json == "") {
+      let dataSheet = context.workbook.worksheets.getItemOrNullObject(recodesheetname);
 
       await context.sync();
-      if (!recodeSheet.isNullObject) {
-        recodeSheet.activate();
-        recodeSheet.getRange(codeinfomation.sheetaddress).select();
-        //console.log(`selected recode sheetrange ${codeinfomation.address}`);
+      if (dataSheet.isNullObject) {
+        dataSheet = context.workbook.worksheets.add(recodesheetname);
       }
-    }
+      dataSheet.position = 0;
+      let searchRange = dataSheet.getUsedRange();
+      let foundRange = searchRange.findOrNullObject(jsonname, {
+        completeMatch: true, // Match the whole cell value.
+        matchCase: false, // Don't match case.
+        searchDirection: Excel.SearchDirection.forward // Start search at the beginning of the range.
+      });
 
-    await context.sync();
-  });
-}
+      foundRange.load("address,values");
+      //let activesheet = context.workbook.worksheets.getActiveWorksheet();
 
-async function recoderange(jsonname,address,id) {
-  await Excel.run(async (context) => {
-    let dataSheet = context.workbook.worksheets.getItemOrNullObject(recodesheetname);
+      await context.sync();
 
-    await context.sync();
+      //console.log("after foundRange ");
+      let recodejsonaddress = "";
+      let recodejsonva = "";
+      if (foundRange.isNullObject) {
+        dataSheet.getRange(address).values = [[jsonname]];
+        recodejsonaddress = address;
+        recodejsonva = "";
+        //console.log(`don't find ${jsonname}`);
+      } else {
+        recodejsonaddress = await get_r_by_address(foundRange.address.toString());
+        recodejsonva = foundRange.values[0][0];
+        //recodejsonaddress = foundRange.address.toString();
+      }
+      //console.log(`recodejsonaddress ${recodejsonaddress} ${recodejsonva}`);
+      let recodejsonrange = dataSheet.getRange(recodejsonaddress);
+      let recodejsonvaluerange = recodejsonrange.getOffsetRange(1, 0);
+      recodejsonvaluerange.load("address,values,valueTypes");
 
-    if (dataSheet.isNullObject) {
-      dataSheet = context.workbook.worksheets.add(recodesheetname);
-    }
-    dataSheet.position = 0;
-    let searchRange = dataSheet.getUsedRange();
-    let foundRange = searchRange.findOrNullObject(jsonname, {
-      completeMatch: true, // Match the whole cell value.
-      matchCase: false, // Don't match case.
-      searchDirection: Excel.SearchDirection.forward // Start search at the beginning of the range.
-    });
+      await context.sync();
 
-    foundRange.load("address,values");
-    //let activesheet = context.workbook.worksheets.getActiveWorksheet();
+      var recodejsonvalue = recodejsonvaluerange.values[0][0];
+      recodejsonname_json = recodejsonvalue;
+      //console.log(`recodejsonvalue ${recodejsonvalue}`);
+      if (recodejsonvaluerange.valueTypes[0][0] === Excel.RangeValueType.empty) {
+        let codejson = recodejson;
+        recodejsonvalue = JSON.stringify(codejson);
+        //codejson.recoderangejsonarray.array.push(selectedinfomation);
+      }
+      //console.log(`object parse  182 `);
 
-    await context.sync();
-
-    //console.log("after foundRange ");
-    let recodejsonaddress = "";
-    let recodejsonva = "";
-    if (foundRange.isNullObject) {
-      dataSheet.getRange(address).values = [[jsonname]];
-      recodejsonaddress = address;
-      recodejsonva = "";
-      //console.log(`don't find ${recodejsonname}`);
-    } else {
-      recodejsonaddress = await get_r_by_address(foundRange.address.toString());
-      recodejsonva = foundRange.values[0][0];
-      //recodejsonaddress = foundRange.address.toString();
-    }
-    //console.log(`recodejsonaddress ${recodejsonaddress} ${recodejsonva}`);
-    let recodejsonrange = dataSheet.getRange(recodejsonaddress);
-    let recodejsonvaluerange = recodejsonrange.getOffsetRange(1, 0);
-    recodejsonvaluerange.load("values,valueTypes");
-
-    let range = context.workbook.getSelectedRange();
-
-    range.load("values,address");
-
-    await context.sync();
-
-    var recodejsonvalue = recodejsonvaluerange.values[0][0];
-    //console.log(`recodejsonvalue ${recodejsonvalue}`);
-    if (recodejsonvaluerange.valueTypes[0][0] === Excel.RangeValueType.empty) {
-      let codejson = recodejson;
-      recodejsonvalue = JSON.stringify(codejson);
-      //codejson.recoderangejsonarray.array.push(selectedinfomation);
-    }
-    //console.log(`object parse `);
-
-    //need json.parse or will error
-    recodejsonvalue = Object.assign(JSON.parse(JSON.stringify(recodejson)), JSON.parse(recodejsonvalue));
-    //console.log(`recodejsonvalue  ${JSON.stringify(recodejsonvalue)}`);
-    let recoderangevalue_new = Array.from(
-      recodejsonvalue.recoderangejsonarray.array,
-      (element) => (element = Object.assign(JSON.parse(JSON.stringify(recoderangejson)), element))
-      //(element) => //console.log("element " + JSON.stringify(element))
-    );
-
-    //console.log("recoderangevalue_new " + JSON.stringify(recoderangevalue_new));
-    //return;
-    recoderangevalue_new = recoderangevalue_new.filter((obj) => obj.id !== id);
-
-    var currentdate = new Date();
-    var datetime =
-      "Last recode: " +
-      currentdate.getDate() +
-      "/" +
-      (currentdate.getMonth() + 1) +
-      "/" +
-      currentdate.getFullYear() +
-      " @ " +
-      currentdate.getHours() +
-      ":" +
-      currentdate.getMinutes() +
-      ":" +
-      currentdate.getSeconds();
-    const selectedinfomation = recoderangejson;
-    selectedinfomation.time = datetime;
-    selectedinfomation.address = range.address;
-    selectedinfomation.sheetname = await get_s_n_by_address(range.address);
-    selectedinfomation.sheetaddress = await get_r_by_address(range.address);
-    selectedinfomation.id = id;
-    //console.log(`selectedinfomation ${JSON.stringify(selectedinfomation)}`);
-
-    recoderangevalue_new.push(selectedinfomation);
-
-    //console.log(`JSON.stringify(recoderangevalue_new.push) ${JSON.stringify(recoderangevalue_new)}`);
-
-    recodejsonvalue.recoderangejsonarray.array = recoderangevalue_new;
-    recodejsonvaluerange.values = [[JSON.stringify(recodejsonvalue)]];
-    //console.log(`JSON.stringify(recodejsonvalue) ${JSON.stringify(recodejsonvalue)}`);
-    //console.log(`selectedinfomation ${JSON.stringify(selectedinfomation)}`);
-    await context.sync();
-  });
-}
-
-async function readsheetrange(jsonname,address,id) {
-  await Excel.run(async (context) => {
-    let dataSheet = context.workbook.worksheets.getItemOrNullObject(recodesheetname);
-
-    await context.sync();
-
-    if (dataSheet.isNullObject) {
-      dataSheet = context.workbook.worksheets.add(recodesheetname);
-    }
-    dataSheet.position = 0;
-    let searchRange = dataSheet.getUsedRange();
-    let foundRange = searchRange.findOrNullObject(jsonname, {
-      completeMatch: true, // Match the whole cell value.
-      matchCase: false, // Don't match case.
-      searchDirection: Excel.SearchDirection.forward // Start search at the beginning of the range.
-    });
-
-    foundRange.load("address,values");
-    //let activesheet = context.workbook.worksheets.getActiveWorksheet();
-
-    await context.sync();
-
-    //console.log("after foundRange ");
-    let recodejsonaddress = "";
-    let recodejsonva = "";
-    if (foundRange.isNullObject) {
-      dataSheet.getRange(address).values = [[jsonname]];
-      recodejsonaddress = address;
-      recodejsonva = "";
-      //console.log(`don't find ${recodejsonname}`);
-    } else {
-      recodejsonaddress = await get_r_by_address(foundRange.address.toString());
-      recodejsonva = foundRange.values[0][0];
-      //recodejsonaddress = foundRange.address.toString();
-    }
-    //console.log(`recodejsonaddress ${recodejsonaddress} ${recodejsonva}`);
-    let recodejsonrange = dataSheet.getRange(recodejsonaddress);
-    let recodejsonvaluerange = recodejsonrange.getOffsetRange(1, 0);
-    recodejsonvaluerange.load("values,valueTypes");
-
-    let range = context.workbook.getSelectedRange();
-
-    range.load("values,address");
-
-    await context.sync();
-    let currentsheetname = await get_s_n_by_address(range.address);
-
-    var recodejsonvalue = recodejsonvaluerange.values[0][0];
-    //console.log(`recodejsonvalue ${recodejsonvalue}`);
-    if (recodejsonvaluerange.valueTypes[0][0] === Excel.RangeValueType.empty) {
-      let codejson = JSON.parse(JSON.stringify(recodejson));
-      recodejsonvalue = JSON.stringify(codejson);
-      //codejson.recoderangejsonarray.array.push(selectedinfomation);
-    }
-    //console.log(`object parse `);
-
-    //need json.parse or will error
-    recodejsonvalue = Object.assign(JSON.parse(JSON.stringify(recodejson)), JSON.parse(recodejsonvalue));
-    //console.log(`recodejsonvalue  ${JSON.stringify(recodejsonvalue)}`);
-
-    let recoderangevalue_pre = Array.from(
-      recodejsonvalue.recodesheetjsonarraycollection.array,
-      (element) => (element = Object.assign(JSON.parse(JSON.stringify(recodesheetjsonarray)), element))
-      //(element) => //console.log("element " + JSON.stringify(element))
-    );
-
-    let recodeinfomation = recoderangevalue_pre.find((obj) => obj.sheetname == currentsheetname);
-    if (recodeinfomation != undefined) {
+      //need json.parse or will error
+      recodejsonvalue = Object.assign(JSON.parse(JSON.stringify(recodejson)), JSON.parse(recodejsonvalue));
+      //console.log(`recodejsonvalue  ${JSON.stringify(recodejsonvalue)}`);
       let recoderangevalue_new = Array.from(
-        recodeinfomation.array,
-        (element) => (element = Object.assign(JSON.parse(JSON.stringify(recodesheetjson)), element))
+        recodejsonvalue.recoderangejsonarray.array,
+        (element) => (element = Object.assign(JSON.parse(JSON.stringify(recoderangejson)), element))
         //(element) => //console.log("element " + JSON.stringify(element))
       );
 
-      //console.log("recodesheetrangevalue_new " + JSON.stringify(recoderangevalue_new));
+      //console.log("recoderangevalue_new " + JSON.stringify(recoderangevalue_new));
       //return;
+      let codeinfomation = recoderangevalue_new.find((element) => element.id == id);
+      if (codeinfomation != undefined) {
+        let recodeSheet = context.workbook.worksheets.getItemOrNullObject(codeinfomation.sheetname);
 
+        await context.sync();
+        if (!recodeSheet.isNullObject) {
+          recodeSheet.activate();
+          recodeSheet.getRange(codeinfomation.sheetaddress).select();
+          //console.log(`selected recode sheetrange ${codeinfomation.address}`);
+        }
+        await context.sync();
+      }
+    } else {
+      //need json.parse or will error
+      recodejsonvalue = Object.assign(JSON.parse(JSON.stringify(recodejson)), JSON.parse(recodejsonname_json));
+      //console.log(`recodejsonvalue  ${JSON.stringify(recodejsonvalue)}`);
+      let recoderangevalue_new = Array.from(
+        recodejsonvalue.recoderangejsonarray.array,
+        (element) => (element = Object.assign(JSON.parse(JSON.stringify(recoderangejson)), element))
+        //(element) => //console.log("element " + JSON.stringify(element))
+      );
+
+      //console.log("recoderangevalue_new " + JSON.stringify(recoderangevalue_new));
+      //return;
       let codeinfomation = recoderangevalue_new.find((element) => element.id == id);
       if (codeinfomation != undefined) {
         let recodeSheet = context.workbook.worksheets.getItemOrNullObject(codeinfomation.sheetname);
@@ -348,8 +181,345 @@ async function readsheetrange(jsonname,address,id) {
           //console.log(`selected recode sheetrange ${codeinfomation.address}`);
         }
       }
+      await context.sync();
+    }
+  });
+}
+
+async function recoderange(jsonname, address, id) {
+  let recode_address = "";
+  if (jsonname == "recodejson") {
+    recode_address = recodejsonname_address;
+  } else if (jsonname == "recodeselectionjson") {
+    recode_address = recodeselectionjsonname_address;
+  }
+
+  await Excel.run(async (context) => {
+    if (recode_address == "") {
+      let dataSheet = context.workbook.worksheets.getItemOrNullObject(recodesheetname);
 
       await context.sync();
+
+      if (dataSheet.isNullObject) {
+        dataSheet = context.workbook.worksheets.add(recodesheetname);
+      }
+      dataSheet.position = 0;
+      let searchRange = dataSheet.getUsedRange();
+      let foundRange = searchRange.findOrNullObject(jsonname, {
+        completeMatch: true, // Match the whole cell value.
+        matchCase: false, // Don't match case.
+        searchDirection: Excel.SearchDirection.forward // Start search at the beginning of the range.
+      });
+
+      foundRange.load("address,values");
+      //let activesheet = context.workbook.worksheets.getActiveWorksheet();
+
+      await context.sync();
+
+      //console.log("after foundRange ");
+      let recodejsonaddress = "";
+      let recodejsonva = "";
+      if (foundRange.isNullObject) {
+        dataSheet.getRange(address).values = [[jsonname]];
+        recodejsonaddress = address;
+        recodejsonva = "";
+        //console.log(`don't find ${recodejsonname}`);
+      } else {
+        recodejsonaddress = await get_r_by_address(foundRange.address.toString());
+        recodejsonva = foundRange.values[0][0];
+        //recodejsonaddress = foundRange.address.toString();
+      }
+      //console.log(`recodejsonaddress ${recodejsonaddress} ${recodejsonva}`);
+      let recodejsonrange = dataSheet.getRange(recodejsonaddress);
+      let recodejsonvaluerange = recodejsonrange.getOffsetRange(1, 0);
+      recodejsonvaluerange.load("address,values,valueTypes");
+
+      let range = context.workbook.getSelectedRange();
+
+      range.load("values,address");
+
+      await context.sync();
+
+      if (jsonname == "recodejson") {
+        recodejsonname_address = recodejsonvaluerange.address;
+      } else if (jsonname == "recodeselectionjson") {
+        recodeselectionjsonname_address = recodejsonvaluerange.address;
+      }
+
+      var recodejsonvalue = recodejsonvaluerange.values[0][0];
+      //console.log(`recodejsonvalue ${recodejsonvalue}`);
+      if (recodejsonvaluerange.valueTypes[0][0] === Excel.RangeValueType.empty) {
+        let codejson = recodejson;
+        recodejsonvalue = JSON.stringify(codejson);
+        //codejson.recoderangejsonarray.array.push(selectedinfomation);
+      }
+      //console.log(`object parse 302  `);
+
+      //need json.parse or will error
+      recodejsonvalue = Object.assign(JSON.parse(JSON.stringify(recodejson)), JSON.parse(recodejsonvalue));
+      //console.log(`recodejsonvalue  ${JSON.stringify(recodejsonvalue)}`);
+      let recoderangevalue_new = Array.from(
+        recodejsonvalue.recoderangejsonarray.array,
+        (element) => (element = Object.assign(JSON.parse(JSON.stringify(recoderangejson)), element))
+        //(element) => //console.log("element " + JSON.stringify(element))
+      );
+
+      //console.log("recoderangevalue_new " + JSON.stringify(recoderangevalue_new));
+      //return;
+      recoderangevalue_new = recoderangevalue_new.filter((obj) => obj.id !== id);
+
+      var currentdate = new Date();
+      var datetime =
+        "Last recode: " +
+        currentdate.getDate() +
+        "/" +
+        (currentdate.getMonth() + 1) +
+        "/" +
+        currentdate.getFullYear() +
+        " @ " +
+        currentdate.getHours() +
+        ":" +
+        currentdate.getMinutes() +
+        ":" +
+        currentdate.getSeconds();
+      const selectedinfomation = recoderangejson;
+      selectedinfomation.time = datetime;
+      selectedinfomation.address = range.address;
+      selectedinfomation.sheetname = await get_s_n_by_address(range.address);
+      selectedinfomation.sheetaddress = await get_r_by_address(range.address);
+      selectedinfomation.id = id;
+      //console.log(`selectedinfomation ${JSON.stringify(selectedinfomation)}`);
+
+      recoderangevalue_new.push(selectedinfomation);
+
+      //console.log(`JSON.stringify(recoderangevalue_new.push) ${JSON.stringify(recoderangevalue_new)}`);
+
+      recodejsonvalue.recoderangejsonarray.array = recoderangevalue_new;
+
+      if (jsonname == "recodejson") {
+        recodejsonname_json = JSON.stringify(recodejsonvalue);
+      } else if (jsonname == "recodeselectionjson") {
+        recodeselectionjsonname_json = JSON.stringify(recodejsonvalue);
+      }
+
+      recodejsonvaluerange.values = [[JSON.stringify(recodejsonvalue)]];
+
+      //console.log(`JSON.stringify(recodejsonvalue) ${JSON.stringify(recodejsonvalue)}`);
+      //console.log(`selectedinfomation ${JSON.stringify(selectedinfomation)}`);
+      await context.sync();
+    } else {
+      let sheetname = await get_s_n_by_address(recode_address);
+      let sheetaddress = await get_r_by_address(recode_address);
+
+      let recodejsonvaluerange = context.workbook.worksheets.getItem(sheetname).getRange(sheetaddress);
+      //recodejsonvaluerange.load("address,values,valueTypes");
+
+      let range = context.workbook.getSelectedRange();
+
+      range.load("values,address");
+
+      await context.sync();
+      let recode_json = "";
+      if (jsonname == "recodejson") {
+        recode_json = recodejsonname_json;
+      } else if (jsonname == "recodeselectionjson") {
+        recode_json = recodeselectionjsonname_json;
+      }
+
+      let recodejsonvalue = recode_json;
+      //console.log(`recodejsonvalue ${recodejsonvalue}`);
+      if (recode_json == "") {
+        let codejson = recodejson;
+        recodejsonvalue = JSON.stringify(codejson);
+        //codejson.recoderangejsonarray.array.push(selectedinfomation);
+      }
+      //console.log(`object parse  376 `);
+
+      //need json.parse or will error
+      recodejsonvalue = Object.assign(JSON.parse(JSON.stringify(recodejson)), JSON.parse(recodejsonvalue));
+      //console.log(`recodejsonvalue  ${JSON.stringify(recodejsonvalue)}`);
+      let recoderangevalue_new = Array.from(
+        recodejsonvalue.recoderangejsonarray.array,
+        (element) => (element = Object.assign(JSON.parse(JSON.stringify(recoderangejson)), element))
+        //(element) => //console.log("element " + JSON.stringify(element))
+      );
+
+      //console.log("recoderangevalue_new " + JSON.stringify(recoderangevalue_new));
+      //return;
+      recoderangevalue_new = recoderangevalue_new.filter((obj) => obj.id !== id);
+
+      var currentdate = new Date();
+      var datetime =
+        "Last recode: " +
+        currentdate.getDate() +
+        "/" +
+        (currentdate.getMonth() + 1) +
+        "/" +
+        currentdate.getFullYear() +
+        " @ " +
+        currentdate.getHours() +
+        ":" +
+        currentdate.getMinutes() +
+        ":" +
+        currentdate.getSeconds();
+      const selectedinfomation = recoderangejson;
+      selectedinfomation.time = datetime;
+      selectedinfomation.address = range.address;
+      selectedinfomation.sheetname = await get_s_n_by_address(range.address);
+      selectedinfomation.sheetaddress = await get_r_by_address(range.address);
+      selectedinfomation.id = id;
+      //console.log(`selectedinfomation ${JSON.stringify(selectedinfomation)}`);
+
+      recoderangevalue_new.push(selectedinfomation);
+
+      //console.log(`JSON.stringify(recoderangevalue_new.push) ${JSON.stringify(recoderangevalue_new)}`);
+
+      recodejsonvalue.recoderangejsonarray.array = recoderangevalue_new;
+
+      if (jsonname == "recodejson") {
+        recodejsonname_json = JSON.stringify(recodejsonvalue);
+      } else if (jsonname == "recodeselectionjson") {
+        recodeselectionjsonname_json = JSON.stringify(recodejsonvalue);
+      }
+      recodejsonvaluerange.values = [[JSON.stringify(recodejsonvalue)]];
+      //console.log(`JSON.stringify(recodejsonvalue) ${JSON.stringify(recodejsonvalue)}`);
+      //console.log(`selectedinfomation ${JSON.stringify(selectedinfomation)}`);
+      await context.sync();
+    }
+  });
+}
+
+async function readsheetrange(jsonname, address, id) {
+  await Excel.run(async (context) => {
+    if (recodejsonname_json == "") {
+      let dataSheet = context.workbook.worksheets.getItemOrNullObject(recodesheetname);
+
+      await context.sync();
+
+      if (dataSheet.isNullObject) {
+        dataSheet = context.workbook.worksheets.add(recodesheetname);
+      }
+      dataSheet.position = 0;
+      let searchRange = dataSheet.getUsedRange();
+      let foundRange = searchRange.findOrNullObject(jsonname, {
+        completeMatch: true, // Match the whole cell value.
+        matchCase: false, // Don't match case.
+        searchDirection: Excel.SearchDirection.forward // Start search at the beginning of the range.
+      });
+
+      foundRange.load("address,values");
+      //let activesheet = context.workbook.worksheets.getActiveWorksheet();
+
+      await context.sync();
+
+      //console.log("after foundRange ");
+      let recodejsonaddress = "";
+      let recodejsonva = "";
+      if (foundRange.isNullObject) {
+        dataSheet.getRange(address).values = [[jsonname]];
+        recodejsonaddress = address;
+        recodejsonva = "";
+        //console.log(`don't find ${recodejsonname}`);
+      } else {
+        recodejsonaddress = await get_r_by_address(foundRange.address.toString());
+        recodejsonva = foundRange.values[0][0];
+        //recodejsonaddress = foundRange.address.toString();
+      }
+      //console.log(`recodejsonaddress ${recodejsonaddress} ${recodejsonva}`);
+      let recodejsonrange = dataSheet.getRange(recodejsonaddress);
+      let recodejsonvaluerange = recodejsonrange.getOffsetRange(1, 0);
+      recodejsonvaluerange.load("address,values,valueTypes");
+
+      let range = context.workbook.getSelectedRange();
+
+      range.load("values,address");
+
+      await context.sync();
+      recodeselectionjsonname_address = recodejsonvaluerange.address;
+      let currentsheetname = await get_s_n_by_address(range.address);
+
+      var recodejsonvalue = recodejsonvaluerange.values[0][0];
+      //console.log(`recodejsonvalue ${recodejsonvalue}`);
+      if (recodejsonvaluerange.valueTypes[0][0] === Excel.RangeValueType.empty) {
+        let codejson = JSON.parse(JSON.stringify(recodejson));
+        recodejsonvalue = JSON.stringify(codejson);
+        //codejson.recoderangejsonarray.array.push(selectedinfomation);
+      }
+      //console.log(`object parse 488  `);
+
+      //need json.parse or will error
+      recodejsonvalue = Object.assign(JSON.parse(JSON.stringify(recodejson)), JSON.parse(recodejsonvalue));
+      //console.log(`recodejsonvalue  ${JSON.stringify(recodejsonvalue)}`);
+
+      let recoderangevalue_pre = Array.from(
+        recodejsonvalue.recodesheetjsonarraycollection.array,
+        (element) => (element = Object.assign(JSON.parse(JSON.stringify(recodesheetjsonarray)), element))
+        //(element) => //console.log("element " + JSON.stringify(element))
+      );
+
+      let recodeinfomation = recoderangevalue_pre.find((obj) => obj.sheetname == currentsheetname);
+      if (recodeinfomation != undefined) {
+        let recoderangevalue_new = Array.from(
+          recodeinfomation.array,
+          (element) => (element = Object.assign(JSON.parse(JSON.stringify(recodesheetjson)), element))
+          //(element) => //console.log("element " + JSON.stringify(element))
+        );
+
+        //console.log("recodesheetrangevalue_new " + JSON.stringify(recoderangevalue_new));
+        //return;
+
+        let codeinfomation = recoderangevalue_new.find((element) => element.id == id);
+        if (codeinfomation != undefined) {
+          let recodeSheet = context.workbook.worksheets.getItemOrNullObject(codeinfomation.sheetname);
+
+          await context.sync();
+          if (!recodeSheet.isNullObject) {
+            recodeSheet.activate();
+            recodeSheet.getRange(codeinfomation.sheetaddress).select();
+            //console.log(`selected recode sheetrange ${codeinfomation.address}`);
+          }
+        }
+
+        await context.sync();
+      }
+    } else {
+      let currentsheet = await getrecodesheetinfomation(id);
+      let currentsheetname = currentsheet.sheetname;
+      //need json.parse or will error
+      var recodejsonvalue = Object.assign(JSON.parse(JSON.stringify(recodejson)), JSON.parse(recodejsonname_json));
+      //console.log(`recodejsonvalue  ${JSON.stringify(recodejsonvalue)}`);
+
+      let recoderangevalue_pre = Array.from(
+        recodejsonvalue.recodesheetjsonarraycollection.array,
+        (element) => (element = Object.assign(JSON.parse(JSON.stringify(recodesheetjsonarray)), element))
+        //(element) => //console.log("element " + JSON.stringify(element))
+      );
+
+      let recodeinfomation = recoderangevalue_pre.find((obj) => obj.sheetname == currentsheetname);
+      if (recodeinfomation != undefined) {
+        let recoderangevalue_new = Array.from(
+          recodeinfomation.array,
+          (element) => (element = Object.assign(JSON.parse(JSON.stringify(recodesheetjson)), element))
+          //(element) => //console.log("element " + JSON.stringify(element))
+        );
+
+        //console.log("recodesheetrangevalue_new " + JSON.stringify(recoderangevalue_new));
+        //return;
+
+        let codeinfomation = recoderangevalue_new.find((element) => element.id == id);
+        if (codeinfomation != undefined) {
+          let recodeSheet = context.workbook.worksheets.getItemOrNullObject(codeinfomation.sheetname);
+
+          await context.sync();
+          if (!recodeSheet.isNullObject) {
+            recodeSheet.activate();
+            recodeSheet.getRange(codeinfomation.sheetaddress).select();
+            //console.log(`selected recode sheetrange ${codeinfomation.address}`);
+          }
+        }
+
+        await context.sync();
+      }
     }
   });
 }
@@ -393,7 +563,7 @@ async function recodesheetrangeold(id) {
     //console.log(`recodejsonaddress ${recodejsonaddress} ${recodejsonva}`);
     let recodejsonrange = dataSheet.getRange(recodejsonaddress);
     let recodejsonvaluerange = recodejsonrange.getOffsetRange(1, 0);
-    recodejsonvaluerange.load("values,valueTypes");
+    recodejsonvaluerange.load("address,values,valueTypes");
 
     let range = context.workbook.getSelectedRange();
 
@@ -413,7 +583,7 @@ async function recodesheetrangeold(id) {
       recodejsonvalue = JSON.stringify(codejson);
       //codejson.recoderangejsonarray.array.push(selectedinfomation);
     }
-    //console.log(`object parse `);
+    //console.log(`object parse 626  `);
 
     //need json.parse or will error
 
@@ -511,12 +681,12 @@ async function recodesheetrangeold(id) {
 
       recodeinfomation_new.array = recoderangevalue_new;
       /*
-      console.log(
+      //console.log(
         `recoderangevalue_pre_global before recodeinfomation_new.sheetname${JSON.stringify(
           recoderangevalue_pre_global  )}` );
       recodeinfomation_new.sheetname = currentsheetname;
 
-      console.log(
+      //console.log(
         `recoderangevalue_pre_global aafter recodeinfomation_new.sheetname []${JSON.stringify(
           recoderangevalue_pre_global
         )}`
@@ -536,112 +706,222 @@ async function recodesheetrangeold(id) {
     }
   });
 }
-async function recodesheetrange(jsonname,address,id) {
+async function recodesheetrange(jsonname, address, id) {
+  let recode_address = "";
+  if (jsonname == "recodejson") {
+    recode_address = recodejsonname_address;
+  } else if (jsonname == "recodeselectionjson") {
+    recode_address = recodeselectionjsonname_address;
+  }
+
   await Excel.run(async (context) => {
-    let dataSheet = context.workbook.worksheets.getItemOrNullObject(recodesheetname);
+    if (recode_address == "") {
+      let dataSheet = context.workbook.worksheets.getItemOrNullObject(recodesheetname);
+      await context.sync();
 
-    await context.sync();
+      if (dataSheet.isNullObject) {
+        dataSheet = context.workbook.worksheets.add(recodesheetname);
+      }
+      dataSheet.position = 0;
+      let searchRange = dataSheet.getUsedRange();
+      let foundRange = searchRange.findOrNullObject(jsonname, {
+        completeMatch: true, // Match the whole cell value.
+        matchCase: false, // Don't match case.
+        searchDirection: Excel.SearchDirection.forward // Start search at the beginning of the range.
+      });
 
-    if (dataSheet.isNullObject) {
-      dataSheet = context.workbook.worksheets.add(recodesheetname);
-    }
-    dataSheet.position = 0;
-    let searchRange = dataSheet.getUsedRange();
-    let foundRange = searchRange.findOrNullObject(jsonname, {
-      completeMatch: true, // Match the whole cell value.
-      matchCase: false, // Don't match case.
-      searchDirection: Excel.SearchDirection.forward // Start search at the beginning of the range.
-    });
+      foundRange.load("address,values");
+      //let activesheet = context.workbook.worksheets.getActiveWorksheet();
 
-    foundRange.load("address,values");
-    //let activesheet = context.workbook.worksheets.getActiveWorksheet();
+      await context.sync();
 
-    await context.sync();
+      //console.log("after foundRange ");
+      let recodejsonaddress = "";
+      let recodejsonva = "";
+      if (foundRange.isNullObject) {
+        dataSheet.getRange(address).values = [[jsonname]];
+        recodejsonaddress = address;
+        recodejsonva = "";
+        //console.log(`don't find ${recodejsonname}`);
+      } else {
+        recodejsonaddress = await get_r_by_address(foundRange.address.toString());
+        recodejsonva = foundRange.values[0][0];
+        //recodejsonaddress = foundRange.address.toString();
+      }
+      //console.log(`recodejsonaddress ${recodejsonaddress} ${recodejsonva}`);
+      let recodejsonrange = dataSheet.getRange(recodejsonaddress);
+      let recodejsonvaluerange = recodejsonrange.getOffsetRange(1, 0);
+      recodejsonvaluerange.load("address,values,valueTypes");
 
-    //console.log("after foundRange ");
-    let recodejsonaddress = "";
-    let recodejsonva = "";
-    if (foundRange.isNullObject) {
-      dataSheet.getRange(address).values = [[jsonname]];
-      recodejsonaddress = address;
-      recodejsonva = "";
-      //console.log(`don't find ${recodejsonname}`);
-    } else {
-      recodejsonaddress = await get_r_by_address(foundRange.address.toString());
-      recodejsonva = foundRange.values[0][0];
-      //recodejsonaddress = foundRange.address.toString();
-    }
-    //console.log(`recodejsonaddress ${recodejsonaddress} ${recodejsonva}`);
-    let recodejsonrange = dataSheet.getRange(recodejsonaddress);
-    let recodejsonvaluerange = recodejsonrange.getOffsetRange(1, 0);
-    recodejsonvaluerange.load("values,valueTypes");
+      await context.sync();
+      if (jsonname == "recodejson") {
+        recodejsonname_address = recodejsonvaluerange.address;
+      } else if (jsonname == "recodeselectionjson") {
+        recodeselectionjsonname_address = recodejsonvaluerange.address;
+      }
+      if (jsonname == "recodejson") {
+        recodejsonname_address = recodejsonvaluerange.address;
+      } else if (jsonname == "recodeselectionjson") {
+        recodeselectionjsonname_address = recodejsonvaluerange.address;
+      }
 
-    await context.sync();
+      let selectedinfomation = await getrecodesheetinfomation(id);
 
-    let selectedinfomation = await getrecodesheetinfomation(id);
+      let currentsheetname = selectedinfomation.sheetname;
 
-    let currentsheetname = selectedinfomation.sheetname;
+      var recodejsonvalue = recodejsonvaluerange.values[0][0];
+      //console.log(`recodejsonvalue ${recodejsonvalue}`);
+      if (recodejsonvaluerange.valueTypes[0][0] === Excel.RangeValueType.empty) {
+        let codejson = JSON.parse(JSON.stringify(recodejson));
+        recodejsonvalue = JSON.stringify(codejson);
+        //codejson.recoderangejsonarray.array.push(selectedinfomation);
+      }
+      //console.log(`object parse 815 `);
 
-    var recodejsonvalue = recodejsonvaluerange.values[0][0];
-    //console.log(`recodejsonvalue ${recodejsonvalue}`);
-    if (recodejsonvaluerange.valueTypes[0][0] === Excel.RangeValueType.empty) {
-      let codejson = JSON.parse(JSON.stringify(recodejson));
-      recodejsonvalue = JSON.stringify(codejson);
-      //codejson.recoderangejsonarray.array.push(selectedinfomation);
-    }
-    //console.log(`object parse `);
+      //need json.parse or will error
 
-    //need json.parse or will error
-
-    recodejsonvalue = Object.assign(JSON.parse(JSON.stringify(recodejson)), JSON.parse(recodejsonvalue));
-    //console.log(`recodejsonvalue  ${JSON.stringify(recodejsonvalue)}`);
-    let recoderangevalue_pre = Array.from(
-      recodejsonvalue.recodesheetjsonarraycollection.array,
-      (element) => (element = Object.assign(JSON.parse(JSON.stringify(recodesheetjsonarray)), element))
-      //(element) => //console.log("element " + JSON.stringify(element))
-    );
-
-    let recodeinfomation = recoderangevalue_pre.find((obj) => obj.sheetname == currentsheetname);
-    //console.log(`recoderangevalue_pre  origin : ${JSON.stringify(recoderangevalue_pre)}`);
-    if (recodeinfomation != undefined) {
-      let recoderangevalue_new = Array.from(
-        recodeinfomation.array,
-        (element) => (element = Object.assign(JSON.parse(JSON.stringify(recodesheetjson)), element))
+      recodejsonvalue = Object.assign(JSON.parse(JSON.stringify(recodejson)), JSON.parse(recodejsonvalue));
+      //console.log(`recodejsonvalue  ${JSON.stringify(recodejsonvalue)}`);
+      let recoderangevalue_pre = Array.from(
+        recodejsonvalue.recodesheetjsonarraycollection.array,
+        (element) => (element = Object.assign(JSON.parse(JSON.stringify(recodesheetjsonarray)), element))
         //(element) => //console.log("element " + JSON.stringify(element))
       );
 
-      //console.log("recodesheetrangevalue_new " + JSON.stringify(recoderangevalue_new));
-      //return;
-      recoderangevalue_new = recoderangevalue_new.filter((obj) => obj.id !== id);
-      recoderangevalue_pre = recoderangevalue_pre.filter((obj) => obj.sheetname !== currentsheetname);
+      let recodeinfomation = recoderangevalue_pre.find((obj) => obj.sheetname == currentsheetname);
+      //console.log(`recoderangevalue_pre  origin : ${JSON.stringify(recoderangevalue_pre)}`);
+      if (recodeinfomation != undefined) {
+        let recoderangevalue_new = Array.from(
+          recodeinfomation.array,
+          (element) => (element = Object.assign(JSON.parse(JSON.stringify(recodesheetjson)), element))
+          //(element) => //console.log("element " + JSON.stringify(element))
+        );
 
-      //console.log(`selectedinfomation ${JSON.stringify(selectedinfomation)}`);
+        //console.log("recodesheetrangevalue_new " + JSON.stringify(recoderangevalue_new));
+        //return;
+        recoderangevalue_new = recoderangevalue_new.filter((obj) => obj.id !== id);
+        recoderangevalue_pre = recoderangevalue_pre.filter((obj) => obj.sheetname !== currentsheetname);
 
-      recoderangevalue_new.push(selectedinfomation);
+        //console.log(`selectedinfomation ${JSON.stringify(selectedinfomation)}`);
 
-      //console.log(`JSON.stringify(recoderangevalue_new.push) ${JSON.stringify(recoderangevalue_new)}`);
-      recodeinfomation.array = recoderangevalue_new;
-      recodeinfomation.sheetname = currentsheetname;
+        recoderangevalue_new.push(selectedinfomation);
 
-      recoderangevalue_pre.push(recodeinfomation);
+        //console.log(`JSON.stringify(recoderangevalue_new.push) ${JSON.stringify(recoderangevalue_new)}`);
+        recodeinfomation.array = recoderangevalue_new;
+        recodeinfomation.sheetname = currentsheetname;
 
-      recodejsonvalue.recodesheetjsonarraycollection.array = recoderangevalue_pre;
-      recodejsonvaluerange.values = [[JSON.stringify(recodejsonvalue)]];
-      //console.log(`JSON.stringify(recodesheetrange jsonvalue) ${JSON.stringify(recodejsonvalue)}`);
-      //console.log(`selectedinfomation ${JSON.stringify(selectedinfomation)}`);
-      await context.sync();
+        recoderangevalue_pre.push(recodeinfomation);
+
+        recodejsonvalue.recodesheetjsonarraycollection.array = recoderangevalue_pre;
+
+        if (jsonname == "recodejson") {
+          recodejsonname_json = JSON.stringify(recodejsonvalue);
+        } else if (jsonname == "recodeselectionjson") {
+          recodeselectionjsonname_json = JSON.stringify(recodejsonvalue);
+        }
+        recodejsonvaluerange.values = [[JSON.stringify(recodejsonvalue)]];
+        //console.log(`JSON.stringify(recodesheetrange jsonvalue) ${JSON.stringify(recodejsonvalue)}`);
+        //console.log(`selectedinfomation ${JSON.stringify(selectedinfomation)}`);
+        await context.sync();
+      } else {
+        let recoderangevalue_create = await recodesheetrangeinfomationupdate(recoderangevalue_pre, selectedinfomation);
+
+        //console.log(`recoderangevalue_create : ${JSON.stringify(recoderangevalue_create)}`);
+
+        //recoderangevalue_pre_global[recoderangevalue_pre_global.length -1 ].sheetname = currentsheetname;
+
+        recodejsonvalue.recodesheetjsonarraycollection.array = recoderangevalue_create;
+        if (jsonname == "recodejson") {
+          recodejsonname_json = JSON.stringify(recodejsonvalue);
+        } else if (jsonname == "recodeselectionjson") {
+          recodeselectionjsonname_json = JSON.stringify(recodejsonvalue);
+        }
+
+        recodejsonvaluerange.values = [[JSON.stringify(recodejsonvalue)]];
+        //console.log(`JSON.stringify(recodesheetrange jsonvalu) new sheet ${JSON.stringify(recodejsonvalue)}`);
+        //console.log(`recode sheet  selectedinfomation ${JSON.stringify(selectedinfomation)}`);
+        await context.sync();
+      }
     } else {
-      let recoderangevalue_create = await recodesheetrangeinfomationupdate(recoderangevalue_pre, selectedinfomation);
+      let selectedinfomation = await getrecodesheetinfomation(id);
 
-      //console.log(`recoderangevalue_create : ${JSON.stringify(recoderangevalue_create)}`);
+      let currentsheetname = selectedinfomation.sheetname;
 
-      //recoderangevalue_pre_global[recoderangevalue_pre_global.length -1 ].sheetname = currentsheetname;
+      let re_address = await get_r_by_address(recode_address);
+      let re_sheet_name = await get_s_n_by_address(recode_address);
+      let recodejsonvaluerange = context.workbook.worksheets.getItem(re_sheet_name).getRange(re_address);
 
-      recodejsonvalue.recodesheetjsonarraycollection.array = recoderangevalue_create;
-      recodejsonvaluerange.values = [[JSON.stringify(recodejsonvalue)]];
-      //console.log(`JSON.stringify(recodesheetrange jsonvalu) new sheet ${JSON.stringify(recodejsonvalue)}`);
-      //console.log(`recode sheet  selectedinfomation ${JSON.stringify(selectedinfomation)}`);
-      await context.sync();
+      //console.log(`object parse 890 `);
+
+      //need json.parse or will error
+      let recode_json = "";
+      if (jsonname == "recodejson") {
+        recode_json = recodejsonname_json;
+      } else if (jsonname == "recodeselectionjson") {
+        recode_json = recodeselectionjsonname_json;
+      }
+
+      let recodejsonvalue = Object.assign(JSON.parse(JSON.stringify(recodejson)), JSON.parse(recode_json));
+      //console.log(`recodejsonvalue  ${JSON.stringify(recodejsonvalue)}`);
+      let recoderangevalue_pre = Array.from(
+        recodejsonvalue.recodesheetjsonarraycollection.array,
+        (element) => (element = Object.assign(JSON.parse(JSON.stringify(recodesheetjsonarray)), element))
+        //(element) => //console.log("element " + JSON.stringify(element))
+      );
+
+      let recodeinfomation = recoderangevalue_pre.find((obj) => obj.sheetname == currentsheetname);
+      //console.log(`recoderangevalue_pre  origin : ${JSON.stringify(recoderangevalue_pre)}`);
+      if (recodeinfomation != undefined) {
+        let recoderangevalue_new = Array.from(
+          recodeinfomation.array,
+          (element) => (element = Object.assign(JSON.parse(JSON.stringify(recodesheetjson)), element))
+          //(element) => //console.log("element " + JSON.stringify(element))
+        );
+
+        //console.log("recodesheetrangevalue_new " + JSON.stringify(recoderangevalue_new));
+        //return;
+        recoderangevalue_new = recoderangevalue_new.filter((obj) => obj.id !== id);
+        recoderangevalue_pre = recoderangevalue_pre.filter((obj) => obj.sheetname !== currentsheetname);
+
+        //console.log(`selectedinfomation ${JSON.stringify(selectedinfomation)}`);
+
+        recoderangevalue_new.push(selectedinfomation);
+
+        //console.log(`JSON.stringify(recoderangevalue_new.push) ${JSON.stringify(recoderangevalue_new)}`);
+        recodeinfomation.array = recoderangevalue_new;
+        recodeinfomation.sheetname = currentsheetname;
+
+        recoderangevalue_pre.push(recodeinfomation);
+
+        recodejsonvalue.recodesheetjsonarraycollection.array = recoderangevalue_pre;
+        if (jsonname == "recodejson") {
+          recodejsonname_json = JSON.stringify(recodejsonvalue);
+        } else if (jsonname == "recodeselectionjson") {
+          recodeselectionjsonname_json = JSON.stringify(recodejsonvalue);
+        }
+
+        recodejsonvaluerange.values = [[JSON.stringify(recodejsonvalue)]];
+        //console.log(`JSON.stringify(recodesheetrange jsonvalue) ${JSON.stringify(recodejsonvalue)}`);
+        //console.log(`selectedinfomation ${JSON.stringify(selectedinfomation)}`);
+        await context.sync();
+      } else {
+        let recoderangevalue_create = await recodesheetrangeinfomationupdate(recoderangevalue_pre, selectedinfomation);
+
+        //console.log(`recoderangevalue_create : ${JSON.stringify(recoderangevalue_create)}`);
+
+        //recoderangevalue_pre_global[recoderangevalue_pre_global.length -1 ].sheetname = currentsheetname;
+
+        recodejsonvalue.recodesheetjsonarraycollection.array = recoderangevalue_create;
+        if (jsonname == "recodejson") {
+          recodejsonname_json = JSON.stringify(recodejsonvalue);
+        } else if (jsonname == "recodeselectionjson") {
+          recodeselectionjsonname_json = JSON.stringify(recodejsonvalue);
+        }
+        recodejsonvaluerange.values = [[JSON.stringify(recodejsonvalue)]];
+        //console.log(`JSON.stringify(recodesheetrange jsonvalu) new sheet ${JSON.stringify(recodejsonvalue)}`);
+        //console.log(`recode sheet  selectedinfomation ${JSON.stringify(selectedinfomation)}`);
+        await context.sync();
+      }
     }
   });
 }
@@ -706,10 +986,10 @@ async function get_r_by_address(address) {
   return str2;
 }
 
-async function getdetailtime(info){
+async function getdetailtime(info) {
   var currentdate = new Date();
   var datetime =
-    info.toString() + 
+    info.toString() +
     " : " +
     currentdate.getDate() +
     "/" +
@@ -722,177 +1002,81 @@ async function getdetailtime(info){
     currentdate.getMinutes() +
     ":" +
     currentdate.getSeconds() +
-    ":" + currentdate.getUTCMilliseconds()
-
-    ;
-    return datetime.toString();
-
-
-
+    ":" +
+    currentdate.getUTCMilliseconds();
+  return datetime.toString();
 }
 
 //2024/03/26 10:29:57 add
 let previousindex = 0;
 async function readrecodeworkbookselection(jsonname, address, index) {
   await Excel.run(async (context) => {
-    let dataSheet = context.workbook.worksheets.getItemOrNullObject(recodesheetname);
-
-    await context.sync();
-    if (dataSheet.isNullObject) {
-      dataSheet = context.workbook.worksheets.add(recodesheetname);
-    }
-    dataSheet.position = 0;
-    let searchRange = dataSheet.getUsedRange();
-    let foundRange = searchRange.findOrNullObject(jsonname, {
-      completeMatch: true, // Match the whole cell value.
-      matchCase: false, // Don't match case.
-      searchDirection: Excel.SearchDirection.forward // Start search at the beginning of the range.
-    });
-
-    foundRange.load("address,values");
-    //let activesheet = context.workbook.worksheets.getActiveWorksheet();
-
-    await context.sync();
-
-    //console.log("after foundRange ");
-    let recodejsonaddress = "";
-    let recodejsonva = "";
-    if (foundRange.isNullObject) {
-      dataSheet.getRange(address).values = [[jsonname]];
-      recodejsonaddress = address;
-      recodejsonva = "";
-      //console.log(`don't find ${jsonname}`);
-    } else {
-      recodejsonaddress = await get_r_by_address(foundRange.address.toString());
-      recodejsonva = foundRange.values[0][0];
-      //recodejsonaddress = foundRange.address.toString();
-    }
-    //console.log(`recodejsonaddress ${recodejsonaddress} ${recodejsonva}`);
-    let recodejsonrange = dataSheet.getRange(recodejsonaddress);
-    let recodejsonvaluerange = recodejsonrange.getOffsetRange(1, 0);
-    recodejsonvaluerange.load("values,valueTypes");
-
-    await context.sync();
-
-    var recodejsonvalue = recodejsonvaluerange.values[0][0];
-    //console.log(`recodejsonvalue ${recodejsonvalue}`);
-    if (recodejsonvaluerange.valueTypes[0][0] === Excel.RangeValueType.empty) {
-      let codejson = recodejson;
-      recodejsonvalue = JSON.stringify(codejson);
-      //codejson.recoderangejsonarray.array.push(selectedinfomation);
-    }
-    //console.log(`object parse `);
-
-    //need json.parse or will error
-    recodejsonvalue = Object.assign(JSON.parse(JSON.stringify(recodejson)), JSON.parse(recodejsonvalue));
-    //console.log(`recodejsonvalue  ${JSON.stringify(recodejsonvalue)}`);
-    let recoderangevalue_new = Array.from(
-      recodejsonvalue.recoderangejsonarray.array,
-      (element) => (element = Object.assign(JSON.parse(JSON.stringify(recoderangejson)), element))
-      //(element) => //console.log("element " + JSON.stringify(element))
-    );
-
-    //console.log("recoderangevalue_new " + JSON.stringify(recoderangevalue_new));
-    //return;
-    let codeinfomation = recoderangevalue_new.find((element, indexo) => indexo == (index == 0 ? recoderangevalue_new.length - 2 : (index - 1)));
-
-    previousindex = (index == 0 ? recoderangevalue_new.length - 2 : (index - 1));
-
-    if (codeinfomation != undefined) {
-      let recodeSheet = context.workbook.worksheets.getItemOrNullObject(codeinfomation.sheetname);
+    if (recodeselectionjsonname_json == "") {
+      let dataSheet = context.workbook.worksheets.getItemOrNullObject(recodesheetname);
 
       await context.sync();
-      if (!recodeSheet.isNullObject) {
-        recodeSheet.activate();
-        recodeSheet.getRange(codeinfomation.sheetaddress).select();
-        //console.log(`selected recode sheetrange ${codeinfomation.address}`);
+      if (dataSheet.isNullObject) {
+        dataSheet = context.workbook.worksheets.add(recodesheetname);
       }
-    }
+      dataSheet.position = 0;
+      let searchRange = dataSheet.getUsedRange();
+      let foundRange = searchRange.findOrNullObject(jsonname, {
+        completeMatch: true, // Match the whole cell value.
+        matchCase: false, // Don't match case.
+        searchDirection: Excel.SearchDirection.forward // Start search at the beginning of the range.
+      });
 
-    await context.sync();
-  });
-}
+      foundRange.load("address,values");
+      //let activesheet = context.workbook.worksheets.getActiveWorksheet();
 
+      await context.sync();
 
-async function readsheetselection(jsonname, address, index) {
-  await Excel.run(async (context) => {
-    let dataSheet = context.workbook.worksheets.getItemOrNullObject(recodesheetname);
+      //console.log("after foundRange ");
+      let recodejsonaddress = "";
+      let recodejsonva = "";
+      if (foundRange.isNullObject) {
+        dataSheet.getRange(address).values = [[jsonname]];
+        recodejsonaddress = address;
+        recodejsonva = "";
+        //console.log(`don't find ${jsonname}`);
+      } else {
+        recodejsonaddress = await get_r_by_address(foundRange.address.toString());
+        recodejsonva = foundRange.values[0][0];
+        //recodejsonaddress = foundRange.address.toString();
+      }
+      //console.log(`recodejsonaddress ${recodejsonaddress} ${recodejsonva}`);
+      let recodejsonrange = dataSheet.getRange(recodejsonaddress);
+      let recodejsonvaluerange = recodejsonrange.getOffsetRange(1, 0);
+      recodejsonvaluerange.load("address,values,valueTypes");
 
-    await context.sync();
+      await context.sync();
 
-    if (dataSheet.isNullObject) {
-      dataSheet = context.workbook.worksheets.add(recodesheetname);
-    }
-    dataSheet.position = 0;
-    let searchRange = dataSheet.getUsedRange();
-    let foundRange = searchRange.findOrNullObject(jsonname, {
-      completeMatch: true, // Match the whole cell value.
-      matchCase: false, // Don't match case.
-      searchDirection: Excel.SearchDirection.forward // Start search at the beginning of the range.
-    });
+      var recodejsonvalue = recodejsonvaluerange.values[0][0];
+      //console.log(`recodejsonvalue ${recodejsonvalue}`);
+      if (recodejsonvaluerange.valueTypes[0][0] === Excel.RangeValueType.empty) {
+        let codejson = recodejson;
+        recodejsonvalue = JSON.stringify(codejson);
+        //codejson.recoderangejsonarray.array.push(selectedinfomation);
+      }
+      //console.log(`object parse 1091  `);
 
-    foundRange.load("address,values");
-    //let activesheet = context.workbook.worksheets.getActiveWorksheet();
-
-    await context.sync();
-
-    //console.log("after foundRange ");
-    let recodejsonaddress = "";
-    let recodejsonva = "";
-    if (foundRange.isNullObject) {
-      dataSheet.getRange(address).values = [[jsonname]];
-      recodejsonaddress = address;
-      recodejsonva = "";
-      //console.log(`don't find ${recodejsonname}`);
-    } else {
-      recodejsonaddress = await get_r_by_address(foundRange.address.toString());
-      recodejsonva = foundRange.values[0][0];
-      //recodejsonaddress = foundRange.address.toString();
-    }
-    //console.log(`recodejsonaddress ${recodejsonaddress} ${recodejsonva}`);
-    let recodejsonrange = dataSheet.getRange(recodejsonaddress);
-    let recodejsonvaluerange = recodejsonrange.getOffsetRange(1, 0);
-    recodejsonvaluerange.load("values,valueTypes");
-
-    let range = context.workbook.getSelectedRange();
-
-    range.load("values,address");
-
-    await context.sync();
-    let currentsheetname = await get_s_n_by_address(range.address);
-
-    var recodejsonvalue = recodejsonvaluerange.values[0][0];
-    //console.log(`recodejsonvalue ${recodejsonvalue}`);
-    if (recodejsonvaluerange.valueTypes[0][0] === Excel.RangeValueType.empty) {
-      let codejson = JSON.parse(JSON.stringify(recodejson));
-      recodejsonvalue = JSON.stringify(codejson);
-      //codejson.recoderangejsonarray.array.push(selectedinfomation);
-    }
-    //console.log(`object parse `);
-
-    //need json.parse or will error
-    recodejsonvalue = Object.assign(JSON.parse(JSON.stringify(recodejson)), JSON.parse(recodejsonvalue));
-    //console.log(`recodejsonvalue  ${JSON.stringify(recodejsonvalue)}`);
-
-    let recoderangevalue_pre = Array.from(
-      recodejsonvalue.recodesheetjsonarraycollection.array,
-      (element) => (element = Object.assign(JSON.parse(JSON.stringify(recodesheetjsonarray)), element))
-      //(element) => //console.log("element " + JSON.stringify(element))
-    );
-
-    let recodeinfomation = recoderangevalue_pre.find((obj) => obj.sheetname == currentsheetname);
-    if (recodeinfomation != undefined) {
+      //need json.parse or will error
+      recodejsonvalue = Object.assign(JSON.parse(JSON.stringify(recodejson)), JSON.parse(recodejsonvalue));
+      //console.log(`recodejsonvalue  ${JSON.stringify(recodejsonvalue)}`);
       let recoderangevalue_new = Array.from(
-        recodeinfomation.array,
-        (element) => (element = Object.assign(JSON.parse(JSON.stringify(recodesheetjson)), element))
+        recodejsonvalue.recoderangejsonarray.array,
+        (element) => (element = Object.assign(JSON.parse(JSON.stringify(recoderangejson)), element))
         //(element) => //console.log("element " + JSON.stringify(element))
       );
 
-      //console.log("recodesheetrangevalue_new " + JSON.stringify(recoderangevalue_new));
+      //console.log("recoderangevalue_new " + JSON.stringify(recoderangevalue_new));
       //return;
+      let codeinfomation = recoderangevalue_new.find(
+        (element, indexo) => indexo == (index == 0 ? recoderangevalue_new.length - 2 : index - 1)
+      );
 
-      let codeinfomation = recoderangevalue_new.find((element, indexo) => indexo == (index == 0 ? recoderangevalue_new.length - 2 : (index - 1)));
-      previousindex = (index == 0 ? recoderangevalue_new.length - 2 : (index - 1));
+      previousindex = index == 0 ? recoderangevalue_new.length - 2 : index - 1;
+
       if (codeinfomation != undefined) {
         let recodeSheet = context.workbook.worksheets.getItemOrNullObject(codeinfomation.sheetname);
 
@@ -903,7 +1087,184 @@ async function readsheetselection(jsonname, address, index) {
           //console.log(`selected recode sheetrange ${codeinfomation.address}`);
         }
       }
+
       await context.sync();
+    } else {
+      //console.log(`object parse 1123 `);
+
+      //need json.parse or will error
+      let recodejsonvalue = Object.assign(
+        JSON.parse(JSON.stringify(recodejson)),
+        JSON.parse(recodeselectionjsonname_json)
+      );
+      //console.log(`recodejsonvalue  ${JSON.stringify(recodejsonvalue)}`);
+      let recoderangevalue_new = Array.from(
+        recodejsonvalue.recoderangejsonarray.array,
+        (element) => (element = Object.assign(JSON.parse(JSON.stringify(recoderangejson)), element))
+        //(element) => //console.log("element " + JSON.stringify(element))
+      );
+
+      //console.log("recoderangevalue_new " + JSON.stringify(recoderangevalue_new));
+      //return;
+      let codeinfomation = recoderangevalue_new.find(
+        (element, indexo) => indexo == (index == 0 ? recoderangevalue_new.length - 2 : index - 1)
+      );
+
+      previousindex = index == 0 ? recoderangevalue_new.length - 2 : index - 1;
+
+      if (codeinfomation != undefined) {
+        let recodeSheet = context.workbook.worksheets.getItemOrNullObject(codeinfomation.sheetname);
+
+        await context.sync();
+        if (!recodeSheet.isNullObject) {
+          recodeSheet.activate();
+          recodeSheet.getRange(codeinfomation.sheetaddress).select();
+          //console.log(`selected recode sheetrange ${codeinfomation.address}`);
+        }
+      }
+
+      await context.sync();
+    }
+  });
+}
+
+async function readsheetselection(jsonname, address, index) {
+  await Excel.run(async (context) => {
+    if (recodeselectionjsonname_json == "") {
+      let dataSheet = context.workbook.worksheets.getItemOrNullObject(recodesheetname);
+
+      await context.sync();
+
+      if (dataSheet.isNullObject) {
+        dataSheet = context.workbook.worksheets.add(recodesheetname);
+      }
+      dataSheet.position = 0;
+      let searchRange = dataSheet.getUsedRange();
+      let foundRange = searchRange.findOrNullObject(jsonname, {
+        completeMatch: true, // Match the whole cell value.
+        matchCase: false, // Don't match case.
+        searchDirection: Excel.SearchDirection.forward // Start search at the beginning of the range.
+      });
+
+      foundRange.load("address,values");
+      //let activesheet = context.workbook.worksheets.getActiveWorksheet();
+
+      await context.sync();
+
+      //console.log("after foundRange ");
+      let recodejsonaddress = "";
+      let recodejsonva = "";
+      if (foundRange.isNullObject) {
+        dataSheet.getRange(address).values = [[jsonname]];
+        recodejsonaddress = address;
+        recodejsonva = "";
+        //console.log(`don't find ${recodejsonname}`);
+      } else {
+        recodejsonaddress = await get_r_by_address(foundRange.address.toString());
+        recodejsonva = foundRange.values[0][0];
+        //recodejsonaddress = foundRange.address.toString();
+      }
+      //console.log(`recodejsonaddress ${recodejsonaddress} ${recodejsonva}`);
+      let recodejsonrange = dataSheet.getRange(recodejsonaddress);
+      let recodejsonvaluerange = recodejsonrange.getOffsetRange(1, 0);
+      recodejsonvaluerange.load("address,values,valueTypes");
+
+      let range = context.workbook.getSelectedRange();
+
+      range.load("values,address");
+
+      await context.sync();
+      let currentsheetname = await get_s_n_by_address(range.address);
+
+      var recodejsonvalue = recodejsonvaluerange.values[0][0];
+      //console.log(`recodejsonvalue ${recodejsonvalue}`);
+      if (recodejsonvaluerange.valueTypes[0][0] === Excel.RangeValueType.empty) {
+        let codejson = JSON.parse(JSON.stringify(recodejson));
+        recodejsonvalue = JSON.stringify(codejson);
+        //codejson.recoderangejsonarray.array.push(selectedinfomation);
+      }
+      //console.log(`object parse  1216 `);
+
+      //need json.parse or will error
+      recodejsonvalue = Object.assign(JSON.parse(JSON.stringify(recodejson)), JSON.parse(recodejsonvalue));
+      //console.log(`recodejsonvalue  ${JSON.stringify(recodejsonvalue)}`);
+
+      let recoderangevalue_pre = Array.from(
+        recodejsonvalue.recodesheetjsonarraycollection.array,
+        (element) => (element = Object.assign(JSON.parse(JSON.stringify(recodesheetjsonarray)), element))
+        //(element) => //console.log("element " + JSON.stringify(element))
+      );
+
+      let recodeinfomation = recoderangevalue_pre.find((obj) => obj.sheetname == currentsheetname);
+      if (recodeinfomation != undefined) {
+        let recoderangevalue_new = Array.from(
+          recodeinfomation.array,
+          (element) => (element = Object.assign(JSON.parse(JSON.stringify(recodesheetjson)), element))
+          //(element) => //console.log("element " + JSON.stringify(element))
+        );
+
+        //console.log("recodesheetrangevalue_new " + JSON.stringify(recoderangevalue_new));
+        //return;
+
+        let codeinfomation = recoderangevalue_new.find(
+          (element, indexo) => indexo == (index == 0 ? recoderangevalue_new.length - 2 : index - 1)
+        );
+        previousindex = index == 0 ? recoderangevalue_new.length - 2 : index - 1;
+        if (codeinfomation != undefined) {
+          let recodeSheet = context.workbook.worksheets.getItemOrNullObject(codeinfomation.sheetname);
+
+          await context.sync();
+          if (!recodeSheet.isNullObject) {
+            recodeSheet.activate();
+            recodeSheet.getRange(codeinfomation.sheetaddress).select();
+            //console.log(`selected recode sheetrange ${codeinfomation.address}`);
+          }
+        }
+        await context.sync();
+      }
+    } else {
+      let infomaton = await getrecodesheetinfomation(index);
+
+      let currentsheetname = infomaton.sheetname;
+      //console.log(`object parse 1259  `);
+
+      //need json.parse or will error
+      recodejsonvalue = Object.assign(JSON.parse(JSON.stringify(recodejson)), JSON.parse(recodeselectionjsonname_json));
+      //console.log(`recodejsonvalue  ${JSON.stringify(recodejsonvalue)}`);
+
+      let recoderangevalue_pre = Array.from(
+        recodejsonvalue.recodesheetjsonarraycollection.array,
+        (element) => (element = Object.assign(JSON.parse(JSON.stringify(recodesheetjsonarray)), element))
+        //(element) => //console.log("element " + JSON.stringify(element))
+      );
+
+      let recodeinfomation = recoderangevalue_pre.find((obj) => obj.sheetname == currentsheetname);
+      if (recodeinfomation != undefined) {
+        let recoderangevalue_new = Array.from(
+          recodeinfomation.array,
+          (element) => (element = Object.assign(JSON.parse(JSON.stringify(recodesheetjson)), element))
+          //(element) => //console.log("element " + JSON.stringify(element))
+        );
+
+        //console.log("recodesheetrangevalue_new " + JSON.stringify(recoderangevalue_new));
+        //return;
+
+        let codeinfomation = recoderangevalue_new.find(
+          (element, indexo) => indexo == (index == 0 ? recoderangevalue_new.length - 2 : index - 1)
+        );
+        previousindex = index == 0 ? recoderangevalue_new.length - 2 : index - 1;
+        if (codeinfomation != undefined) {
+          let recodeSheet = context.workbook.worksheets.getItemOrNullObject(codeinfomation.sheetname);
+
+          await context.sync();
+          if (!recodeSheet.isNullObject) {
+            recodeSheet.activate();
+            recodeSheet.getRange(codeinfomation.sheetaddress).select();
+            //console.log(`selected recode sheetrange ${codeinfomation.address}`);
+          }
+        }
+        await context.sync();
+      }
     }
   });
 }
