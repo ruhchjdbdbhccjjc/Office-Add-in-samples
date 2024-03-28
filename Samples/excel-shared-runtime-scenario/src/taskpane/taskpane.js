@@ -38,6 +38,7 @@ async function reconnectService_new(){
   try {
     await registerClickHandler();
     await registerrecodeClickHandler();
+    var intervalID = setInterval(getcommand, 250);
    
   } catch (error) {
     console.error(error);
