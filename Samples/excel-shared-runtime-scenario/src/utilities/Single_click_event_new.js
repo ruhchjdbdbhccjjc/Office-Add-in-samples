@@ -305,7 +305,7 @@ Object.defineProperty(cmdjson, "recoderange", {
     console.log(this.commandguid + " : " + newAge);
     // Shows all indexes, including deleted
     console.log("recoderange start recode ! ");
-    await recoderange(recodejsonname, "A1", newAge.toString());
+    await recoderange(recodejsonname, "A1", newAge);
     var returncommand = officecommandfinisedruncollection.find((value, index) => {
       var result = null;
       // Delete element 5 on first iteration
@@ -343,7 +343,7 @@ Object.defineProperty(cmdjson, "readrecoderange", {
     isoncommand = true;
     console.log(this.commandguid + " : " + newAge);
     // Shows all indexes, including deleted
-    await readrecoderange(recodejsonname, "A1", newAge.toString());
+    await readrecoderange(recodejsonname, "A1", newAge);
     var returncommand = officecommandfinisedruncollection.find((value, index) => {
       var result = null;
       // Delete element 5 on first iteration
@@ -381,7 +381,7 @@ Object.defineProperty(cmdjson, "recodesheetrange", {
     isoncommand = true;
     console.log(this.commandguid + " : " + newAge);
     // Shows all indexes, including deleted
-    await recodesheetrange(recodejsonname, "A1", newAge.toString());
+    await recodesheetrange(recodejsonname, "A1", newAge);
     var returncommand = officecommandfinisedruncollection.find((value, index) => {
       var result = null;
       // Delete element 5 on first iteration
@@ -420,7 +420,7 @@ Object.defineProperty(cmdjson, "readsheetrange", {
     console.log(this.commandguid + " : " + newAge);
     // Shows all indexes, including deleted
     //await arrowLine();
-    await readsheetrange(recodejsonname, "A1", newAge.toString());
+    await readsheetrange(recodejsonname, "A1", newAge);
     var returncommand = officecommandfinisedruncollection.find((value, index) => {
       var result = null;
       // Delete element 5 on first iteration
