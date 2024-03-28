@@ -12,6 +12,8 @@ Office.onReady((info) => {
 
     document.getElementById("connectService").onclick = connectService; // in office-apis-helpers.js
     document.getElementById("selectFilter").onclick = insertFilteredData;
+    //new Service
+    document.getElementById("connectService_new").onclick = reconnectService_new;
     
     updateRibbon();
     updateTaskPaneUI();
@@ -30,4 +32,16 @@ async function insertFilteredData() {
   } catch (error) {
     console.error(error);
   }
+}
+//
+async function reconnectService_new(){
+  try {
+    await registerClickHandler();
+    await registerrecodeClickHandler();
+   
+  } catch (error) {
+    console.error(error);
+  }
+
+  
 }
