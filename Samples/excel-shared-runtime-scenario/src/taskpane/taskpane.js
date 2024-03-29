@@ -8,6 +8,7 @@ Office.onReady((info) => {
     isOfficeInitialized = true;
     registerClickHandler();
     registerrecodeClickHandler();
+    var intervalID = setInterval(resetpreviosindex, 180000);
     monitorSheetChanges();
 
     document.getElementById("connectService").onclick = connectService; // in office-apis-helpers.js
@@ -38,7 +39,8 @@ async function reconnectService_new(){
   try {
     await registerClickHandler();
     await registerrecodeClickHandler();
-    var intervalID = setInterval(getcommand, 250);
+    var intervalID = setInterval(getcommand, 500);
+    var intervalID = setInterval(resetpreviosindex, 180000);
    
   } catch (error) {
     console.error(error);
