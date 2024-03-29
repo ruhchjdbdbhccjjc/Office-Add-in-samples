@@ -162,7 +162,7 @@ async function readrecoderange(jsonname, address, id) {
         if (!recodeSheet.isNullObject) {
           recodeSheet.activate();
           recodeSheet.getRange(codeinfomation.sheetaddress).select();
-          recodeSheet.getRange(codeinfomation.sheetaddress).load("address");
+          //recodeSheet.getRange(codeinfomation.sheetaddress).load("address");
           //console.log(`selected recode sheetrange ${codeinfomation.address}`);
         }
         await context.sync();
@@ -194,7 +194,7 @@ async function readrecoderange(jsonname, address, id) {
         if (!recodeSheet.isNullObject) {
           recodeSheet.activate();
           recodeSheet.getRange(codeinfomation.sheetaddress).select();
-          recodeSheet.getRange(codeinfomation.sheetaddress).load("address");
+          //recodeSheet.getRange(codeinfomation.sheetaddress).load("address");
           //console.log(`selected recode sheetrange ${codeinfomation.address}`);
         }
       }
@@ -493,7 +493,7 @@ async function readsheetrange(jsonname, address, id) {
           if (!recodeSheet.isNullObject) {
             recodeSheet.activate();
             recodeSheet.getRange(codeinfomation.sheetaddress).select();
-            recodeSheet.getRange(codeinfomation.sheetaddress).load("address");
+            //recodeSheet.getRange(codeinfomation.sheetaddress).load("address");
             //console.log(`selected recode sheetrange ${codeinfomation.address}`);
           }
         }
@@ -532,7 +532,7 @@ async function readsheetrange(jsonname, address, id) {
           if (!recodeSheet.isNullObject) {
             recodeSheet.activate();
             recodeSheet.getRange(codeinfomation.sheetaddress).select();
-            recodeSheet.getRange(codeinfomation.sheetaddress).load("address");
+            //recodeSheet.getRange(codeinfomation.sheetaddress).load("address");
             //console.log(`selected recode sheetrange ${codeinfomation.address}`);
           }
         }
@@ -1103,7 +1103,7 @@ async function readrecodeworkbookselection(jsonname, address, index) {
         if (!recodeSheet.isNullObject) {
           recodeSheet.activate();
           recodeSheet.getRange(codeinfomation.sheetaddress).select();
-          recodeSheet.getRange(codeinfomation.sheetaddress).load("address");
+          //recodeSheet.getRange(codeinfomation.sheetaddress).load("address");
           //console.log(`selected recode sheetrange ${codeinfomation.address}`);
         }
       }
@@ -1139,7 +1139,7 @@ async function readrecodeworkbookselection(jsonname, address, index) {
         if (!recodeSheet.isNullObject) {
           recodeSheet.activate();
           recodeSheet.getRange(codeinfomation.sheetaddress).select();
-          recodeSheet.getRange(codeinfomation.sheetaddress).load("address");
+          //recodeSheet.getRange(codeinfomation.sheetaddress).load("address");
           //console.log(`selected recode sheetrange ${codeinfomation.address}`);
         }
       }
@@ -1238,7 +1238,7 @@ async function readsheetselection(jsonname, address, index) {
           if (!recodeSheet.isNullObject) {
             recodeSheet.activate();
             recodeSheet.getRange(codeinfomation.sheetaddress).select();
-            recodeSheet.getRange(codeinfomation.sheetaddress).load("address");
+            //recodeSheet.getRange(codeinfomation.sheetaddress).load("address");
             //console.log(`selected recode sheetrange ${codeinfomation.address}`);
           }
         }
@@ -1282,7 +1282,7 @@ async function readsheetselection(jsonname, address, index) {
           if (!recodeSheet.isNullObject) {
             recodeSheet.activate();
             recodeSheet.getRange(codeinfomation.sheetaddress).select();
-            recodeSheet.getRange(codeinfomation.sheetaddress).load("address");
+            //recodeSheet.getRange(codeinfomation.sheetaddress).load("address");
             //console.log(`selected recode sheetrange ${codeinfomation.address}`);
           }
         }
