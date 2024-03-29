@@ -8,7 +8,7 @@ Office.onReady((info) => {
     isOfficeInitialized = true;
     registerClickHandler();
     registerrecodeClickHandler();
-    var intervalID = setInterval(getcommand, 500);
+    var intervalID = setInterval(getcommand, 200);
     var intervalID = setInterval(resetpreviosindex, 180000);
     monitorSheetChanges();
 
@@ -40,7 +40,7 @@ async function reconnectService_new(){
   try {
     await registerClickHandler();
     await registerrecodeClickHandler();
-    var intervalID = setInterval(getcommand, 500);
+    var intervalID = setInterval(getcommand, 200);
     var intervalID = setInterval(resetpreviosindex, 180000);
    
   } catch (error) {
