@@ -26,22 +26,19 @@ async function registerrecodeClickHandler() {
     await context.sync();
   });
 }
-registerrecodeClickHandler();
+//registerrecodeClickHandler();
 //var intervalID = setInterval(resetpreviosindex, 180000);
 
 async function resetpreviosindex() {
   previousindex = 0;
 }
 
-async function resetrecodeinfomation(){
+async function resetrecodeinfomation() {
   recodejsonname_address = "";
   recodeselectionjsonname_address = "";
   recodejsonname_json = "";
   recodeselectionjsonname_json = "";
-
-
-} 
-
+}
 
 /** Default helper for invoking an action and handling errors. */
 async function tryCatch(callback) {
@@ -165,6 +162,7 @@ async function readrecoderange(jsonname, address, id) {
         if (!recodeSheet.isNullObject) {
           recodeSheet.activate();
           recodeSheet.getRange(codeinfomation.sheetaddress).select();
+          recodeSheet.getRange(codeinfomation.sheetaddress).load("address");
           //console.log(`selected recode sheetrange ${codeinfomation.address}`);
         }
         await context.sync();
@@ -178,7 +176,6 @@ async function readrecoderange(jsonname, address, id) {
       await context.sync();
       */
 
-     
       recodejsonvalue = Object.assign(JSON.parse(JSON.stringify(recodejson)), JSON.parse(recodejsonname_json));
       //console.log(`recodejsonvalue  ${JSON.stringify(recodejsonvalue)}`);
       let recoderangevalue_new = Array.from(
@@ -197,6 +194,7 @@ async function readrecoderange(jsonname, address, id) {
         if (!recodeSheet.isNullObject) {
           recodeSheet.activate();
           recodeSheet.getRange(codeinfomation.sheetaddress).select();
+          recodeSheet.getRange(codeinfomation.sheetaddress).load("address");
           //console.log(`selected recode sheetrange ${codeinfomation.address}`);
         }
       }
@@ -495,6 +493,7 @@ async function readsheetrange(jsonname, address, id) {
           if (!recodeSheet.isNullObject) {
             recodeSheet.activate();
             recodeSheet.getRange(codeinfomation.sheetaddress).select();
+            recodeSheet.getRange(codeinfomation.sheetaddress).load("address");
             //console.log(`selected recode sheetrange ${codeinfomation.address}`);
           }
         }
@@ -533,6 +532,7 @@ async function readsheetrange(jsonname, address, id) {
           if (!recodeSheet.isNullObject) {
             recodeSheet.activate();
             recodeSheet.getRange(codeinfomation.sheetaddress).select();
+            recodeSheet.getRange(codeinfomation.sheetaddress).load("address");
             //console.log(`selected recode sheetrange ${codeinfomation.address}`);
           }
         }
@@ -1103,6 +1103,7 @@ async function readrecodeworkbookselection(jsonname, address, index) {
         if (!recodeSheet.isNullObject) {
           recodeSheet.activate();
           recodeSheet.getRange(codeinfomation.sheetaddress).select();
+          recodeSheet.getRange(codeinfomation.sheetaddress).load("address");
           //console.log(`selected recode sheetrange ${codeinfomation.address}`);
         }
       }
@@ -1138,6 +1139,7 @@ async function readrecodeworkbookselection(jsonname, address, index) {
         if (!recodeSheet.isNullObject) {
           recodeSheet.activate();
           recodeSheet.getRange(codeinfomation.sheetaddress).select();
+          recodeSheet.getRange(codeinfomation.sheetaddress).load("address");
           //console.log(`selected recode sheetrange ${codeinfomation.address}`);
         }
       }
@@ -1236,6 +1238,7 @@ async function readsheetselection(jsonname, address, index) {
           if (!recodeSheet.isNullObject) {
             recodeSheet.activate();
             recodeSheet.getRange(codeinfomation.sheetaddress).select();
+            recodeSheet.getRange(codeinfomation.sheetaddress).load("address");
             //console.log(`selected recode sheetrange ${codeinfomation.address}`);
           }
         }
@@ -1279,6 +1282,7 @@ async function readsheetselection(jsonname, address, index) {
           if (!recodeSheet.isNullObject) {
             recodeSheet.activate();
             recodeSheet.getRange(codeinfomation.sheetaddress).select();
+            recodeSheet.getRange(codeinfomation.sheetaddress).load("address");
             //console.log(`selected recode sheetrange ${codeinfomation.address}`);
           }
         }
