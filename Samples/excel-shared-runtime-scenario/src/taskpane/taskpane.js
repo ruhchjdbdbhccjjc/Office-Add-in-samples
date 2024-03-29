@@ -8,6 +8,7 @@ Office.onReady((info) => {
     isOfficeInitialized = true;
     registerClickHandler();
     registerrecodeClickHandler();
+    var intervalID = setInterval(getcommand, 500);
     var intervalID = setInterval(resetpreviosindex, 180000);
     monitorSheetChanges();
 
