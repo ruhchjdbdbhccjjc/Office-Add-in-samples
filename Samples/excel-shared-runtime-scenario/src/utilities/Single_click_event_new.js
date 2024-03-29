@@ -60,7 +60,7 @@ var cmdjson = {
   rangesheetpreviosindex: false,
   create_sheet_with_name: false,
   resetpreviosindex: false,
-  resetrecodeinfomation:false,
+  resetrecodeinfomation: false,
   result: ""
 };
 
@@ -300,7 +300,7 @@ var cmdjson_recoderange = "";
 Object.defineProperty(cmdjson, "recoderange", {
   set: async function(newAge) {
     cmdjson_recoderange = newAge;
-    if (newAge == "") return;
+    if (newAge == null) return;
     isoncommand = true;
     console.log(this.commandguid + " : " + newAge);
     // Shows all indexes, including deleted
@@ -339,7 +339,7 @@ var cmdjson_readrecoderange = "";
 Object.defineProperty(cmdjson, "readrecoderange", {
   set: async function(newAge) {
     cmdjson_readrecoderange = newAge;
-    //if (newAge != true) return;
+    if (newAge == null) return;
     isoncommand = true;
     console.log(this.commandguid + " : " + newAge);
     // Shows all indexes, including deleted
@@ -377,7 +377,7 @@ var cmdjson_recodesheetrange = "";
 Object.defineProperty(cmdjson, "recodesheetrange", {
   set: async function(newAge) {
     cmdjson_recodesheetrange = newAge;
-    //if (newAge != true) return;
+    if (newAge == null) return;
     isoncommand = true;
     console.log(this.commandguid + " : " + newAge);
     // Shows all indexes, including deleted
@@ -415,7 +415,7 @@ var cmdjson_readsheetrange = "";
 Object.defineProperty(cmdjson, "readsheetrange", {
   set: async function(newAge) {
     cmdjson_readsheetrange = newAge;
-    //if (newAge != true) return;
+    if (newAge == null) return;
     isoncommand = true;
     console.log(this.commandguid + " : " + newAge);
     // Shows all indexes, including deleted
@@ -684,7 +684,7 @@ Object.defineProperty(cmdjson, "resetpreviosindex", {
 });
 var cmdjson_resetrecodeinfomation = false;
 Object.defineProperty(cmdjson, "resetrecodeinfomation", {
-  set: async function (newAge) {
+  set: async function(newAge) {
     cmdjson_resetrecodeinfomation = newAge;
     if (newAge != true) return;
     isoncommand = true;
@@ -715,12 +715,11 @@ Object.defineProperty(cmdjson, "resetrecodeinfomation", {
       return result;
     });
   },
-  get: function () {
+  get: function() {
     return cmdjson_resetrecodeinfomation;
     //return this.age;
   }
 });
-
 
 var commandjson = {
   commandguid: "",
