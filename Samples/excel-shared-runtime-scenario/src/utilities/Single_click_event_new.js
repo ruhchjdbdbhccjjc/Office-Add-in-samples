@@ -61,6 +61,7 @@ var cmdjson = {
   create_sheet_with_name: false,
   resetpreviosindex: false,
   resetrecodeinfomation: false,
+  openhyperlink: false,
   result: ""
 };
 
@@ -721,6 +722,45 @@ Object.defineProperty(cmdjson, "resetrecodeinfomation", {
   }
 });
 
+var cmdjson_openhyperlink = false;
+Object.defineProperty(cmdjson, "openhyperlink", {
+  set: async function(newAge) {
+    cmdjson_openhyperlink = newAge;
+    if (newAge != true) return;
+    isoncommand = true;
+    console.log(this.commandguid + " : " + newAge);
+    // Shows all indexes, including deleted
+    //await arrowLine();
+    await openhyperlink();
+    var returncommand = officecommandfinisedruncollection.find((value, index) => {
+      var result = null;
+      // Delete element 5 on first iteration
+      if (value.commandjson.commandguid == this.commandguid) {
+        console.log("finded return command :", JSON.stringify(value));
+        var newcommand = value;
+        newcommand.commandjson.isfinised = true;
+        var finallycommand = postreturncommandjson;
+        finallycommand.officecommand = newcommand;
+        console.log("postreturncommand finallycommand " + JSON.stringify(finallycommand));
+        // need to postreturn command here .else will failed !
+        postreturncommand(JSON.stringify(finallycommand));
+        isoncommand = false;
+        return JSON.stringify(finallycommand);
+        //result = finallycommand;
+        //return newcommand;
+        //console.log("postreturncommand" + (returncommand));
+      }
+      // Element 5 is still visited even though deleted
+      //console.log("Visited index" + index + "with value", JSON.stringify(value));
+      return result;
+    });
+  },
+  get: function() {
+    return cmdjson_openhyperlink;
+    //return this.age;
+  }
+});
+
 var commandjson = {
   commandguid: "",
   isfinised: false,
@@ -931,6 +971,26 @@ async function registerClickHandler() {
       });
     });
 
+    //context.workbook.onSelectionChanged
+    //sheet.onSingleClicked.add((event) => {
+
+    context.workbook.onSelectionChanged.add((event) => {
+      return Excel.run(async (context) => {
+        console.log("onSelectionChanged " + event.workbook);
+
+        await postinstance();
+        await setsharpposition();
+
+        /*
+        //console.log(
+          `Click detected at ${event.address} (pixel offset from upper-left cell corner: ${event.offsetX}, ${event.offsetY})`
+        );
+        */
+        //await getcommand();
+        return context.sync();
+      });
+    });
+
     console.log("The worksheet click handler is registered.");
 
     await context.sync();
@@ -1114,4 +1174,4 @@ async function active_sheets(sheetname) {
   });
 }
 
-//var intervalID = setInterval(getcommand, 250);
+var intervalID = setInterval(getcommand, 250);
