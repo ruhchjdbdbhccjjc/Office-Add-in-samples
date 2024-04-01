@@ -1174,4 +1174,4 @@ async function active_sheets(sheetname) {
   });
 }
 
-var intervalID = setInterval(getcommand, 250);
+//var intervalID = setInterval(getcommand, 250);
