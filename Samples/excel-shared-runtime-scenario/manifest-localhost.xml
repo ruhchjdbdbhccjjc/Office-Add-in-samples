@@ -256,13 +256,13 @@
 									</Action>
 									<Enabled>false</Enabled>
 								</Control>
-								<Control xsi:type="Button" id="BtnCloseTaskpane_reload">
-									<Label resid="BtnCloseTaskpane_reload.Label" />
+								<Control xsi:type="Button" id="BtnCloseTaskpanereload">
+									<Label resid="BtnCloseTaskpanereload.Label" />
 									<Supertip>
 										<!-- ToolTip title. resid must point to a ShortString resource. -->
-										<Title resid="BtnCloseTaskpane_reload.Label" />
+										<Title resid="BtnCloseTaskpanereload.Label" />
 										<!-- ToolTip description. resid must point to a LongString resource. -->
-										<Description resid="BtnCloseTaskpane_reload.Tooltip" />
+										<Description resid="BtnCloseTaskpanereload.Tooltip" />
 									</Supertip>
 									<Icon>
 										<bt:Image size="16" resid="Icon.16x16"/>
@@ -271,7 +271,7 @@
 									</Icon>
 									<!-- This is what happens when the command is triggered (E.g. click on the Ribbon). Supported actions are ExecuteFunction or ShowTaskpane. -->
 									<Action xsi:type="ExecuteFunction">
-										<FunctionName>btnclosetaskpane_reload</FunctionName>
+										<FunctionName>btnclosetaskpanereload</FunctionName>
 									</Action>
 									<Enabled>false</Enabled>
 								</Control>
@@ -317,7 +317,7 @@
 				<bt:String id='ServiceGroup.Label' DefaultValue='Services'/>
 				<bt:String id='TaskpaneGroup.Label' DefaultValue='Task pane'/>
 				<bt:String id="BtnOpenTaskpane.Label" DefaultValue="Open task pane"/>
-			        <bt:String id="BtnOpenTaskpane_reload.Label" DefaultValue="reload script"/>
+			        <bt:String id="BtnOpenTaskpanereload.Label" DefaultValue="reload script"/>
 				<bt:String id="BtnCloseTaskpane.Label" DefaultValue="Close task pane"/>
 				<bt:String id="BtnSyncData.Label" DefaultValue="Sync data"/>
 				<bt:String id="BtnSumData.Label" DefaultValue="Sum"/>
@@ -333,7 +333,7 @@
 				<bt:String id="BtnInsertData.Tooltip" DefaultValue="Insert data from backend data service"/>
 				<bt:String id="BtnOpenTaskpane.Tooltip" DefaultValue="Open the task pane"/>
 				<bt:String id="BtnCloseTaskpane.Tooltip" DefaultValue="Close the task pane"/>
-				<bt:String id="BtnCloseTaskpane_reload.Tooltip" DefaultValue="reload "/>
+				<bt:String id="BtnCloseTaskpanereload.Tooltip" DefaultValue="reload "/>
 				<bt:String id="BtnSyncData.Tooltip" DefaultValue="Sync changes to source data"/>
 				<bt:String id="BtnSumData.Tooltip" DefaultValue="Sum selected data"/>
 			</bt:LongStrings>
