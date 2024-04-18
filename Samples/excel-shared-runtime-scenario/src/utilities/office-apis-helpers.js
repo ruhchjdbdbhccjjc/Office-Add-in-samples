@@ -69,10 +69,7 @@ function updateRibbon() {
             id: "BtnCloseTaskpane",
             enabled: g.state.isTaskpaneOpen,
           },
-          {
-            id: "BtnCloseTaskpanereload",
-            enabled: g.state.isTaskpaneOpen,
-          },
+         
         ],
       },
     ],
