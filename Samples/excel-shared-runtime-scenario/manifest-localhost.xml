@@ -273,7 +273,7 @@
 									<Action xsi:type="ExecuteFunction">
 										<FunctionName>btnclosetaskpanereload</FunctionName>
 									</Action>
-									<Enabled>false</Enabled>
+									<Enabled>true</Enabled>
 								</Control>
 								
 
