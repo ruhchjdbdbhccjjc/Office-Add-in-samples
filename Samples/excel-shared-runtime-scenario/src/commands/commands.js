@@ -41,7 +41,7 @@ function btnDisconnectService(event) {
 function Refresh(){
   location.reload();
 }
-function btnCloseTaskpane_reload(event) {
+function btnCloseTaskpanereload(event) {
   console.log("reload button pressed");
   // Your code goes here
   SetRuntimeVisibleHelper(false);
@@ -147,7 +147,7 @@ Office.actions.associate("btnConnectService", btnConnectService);
 Office.actions.associate("btnDisconnectService", btnDisconnectService);
 Office.actions.associate("btnOpenTaskpane", btnOpenTaskpane);
 Office.actions.associate("btnCloseTaskpane", btnCloseTaskpane);
-Office.actions.associate("btnCloseTaskpane_reload", btnCloseTaskpane_reload);
+Office.actions.associate("btnCloseTaskpanereload", btnCloseTaskpanereload);
 Office.actions.associate("btnEnableAddinStart", btnEnableAddinStart);
 Office.actions.associate("btnDisableAddinStart", btnDisableAddinStart);
 Office.actions.associate("btnInsertData", btnInsertData);
