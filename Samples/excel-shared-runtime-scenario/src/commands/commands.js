@@ -38,6 +38,18 @@ function btnDisconnectService(event) {
   updateRibbon();
   event.completed();
 }
+function Refresh(){
+  location.reload();
+}
+function btnCloseTaskpane_reload(event) {
+  console.log("reload button pressed");
+  // Your code goes here
+  SetRuntimeVisibleHelper(false);
+  //g.state.isTaskpaneOpen = false;
+  Refresh();
+  updateRibbon();
+  event.completed();
+}
 
  function btnEnableAddinStart(event) {
   console.log("Enable add-in start button pressed");
@@ -135,6 +147,7 @@ Office.actions.associate("btnConnectService", btnConnectService);
 Office.actions.associate("btnDisconnectService", btnDisconnectService);
 Office.actions.associate("btnOpenTaskpane", btnOpenTaskpane);
 Office.actions.associate("btnCloseTaskpane", btnCloseTaskpane);
+Office.actions.associate("btnCloseTaskpane_reload", btnCloseTaskpane_reload);
 Office.actions.associate("btnEnableAddinStart", btnEnableAddinStart);
 Office.actions.associate("btnDisableAddinStart", btnDisableAddinStart);
 Office.actions.associate("btnInsertData", btnInsertData);
