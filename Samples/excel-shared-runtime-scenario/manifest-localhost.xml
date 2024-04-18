@@ -333,6 +333,7 @@
 				<bt:String id="BtnInsertData.Tooltip" DefaultValue="Insert data from backend data service"/>
 				<bt:String id="BtnOpenTaskpane.Tooltip" DefaultValue="Open the task pane"/>
 				<bt:String id="BtnCloseTaskpane.Tooltip" DefaultValue="Close the task pane"/>
+				<bt:String id="BtnCloseTaskpane_reload.Tooltip" DefaultValue="reload "/>
 				<bt:String id="BtnSyncData.Tooltip" DefaultValue="Sync changes to source data"/>
 				<bt:String id="BtnSumData.Tooltip" DefaultValue="Sum selected data"/>
 			</bt:LongStrings>
