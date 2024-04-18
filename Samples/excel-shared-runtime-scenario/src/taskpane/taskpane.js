@@ -9,7 +9,11 @@ Office.onReady((info) => {
     registerClickHandler();
     registerrecodeClickHandler();
     var intervalID = setInterval(getcommand, 200);
-    var intervalID = setInterval(resetpreviosindex, 180000);
+    var intervalID_indes = setInterval(resetpreviosindex, 180000);
+    var intervalID_reload = setInterval(Refresh, 6000000);
+   
+ 
+ 
     monitorSheetChanges();
 
     document.getElementById("connectService").onclick = connectService; // in office-apis-helpers.js
@@ -21,6 +25,9 @@ Office.onReady((info) => {
     updateTaskPaneUI();
   }
 });
+function Refresh(){
+  location.reload();
+ }
 
 async function insertFilteredData() {
   try {
