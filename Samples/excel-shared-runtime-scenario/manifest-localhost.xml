@@ -317,7 +317,7 @@
 				<bt:String id='ServiceGroup.Label' DefaultValue='Services'/>
 				<bt:String id='TaskpaneGroup.Label' DefaultValue='Task pane'/>
 				<bt:String id="BtnOpenTaskpane.Label" DefaultValue="Open task pane"/>
-			        <bt:String id="BtnOpenTaskpanereload.Label" DefaultValue="reload script"/>
+			        <bt:String id="BtnCloseTaskpanereload.Label" DefaultValue="reload script"/>
 				<bt:String id="BtnCloseTaskpane.Label" DefaultValue="Close task pane"/>
 				<bt:String id="BtnSyncData.Label" DefaultValue="Sync data"/>
 				<bt:String id="BtnSumData.Label" DefaultValue="Sum"/>
