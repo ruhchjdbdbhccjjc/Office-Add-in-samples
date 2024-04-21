@@ -30,7 +30,7 @@ async function loadFileName() {
       }
       resolve("");
     });
-  });
+  }); 
 }
 
 var postreturncommandjson = {
@@ -75,7 +75,7 @@ Object.defineProperty(cmdjson, "setboard", {
     // Shows all indexes, including deleted
     //await arrowLine();
     await setborder();
-    var returncommand = officecommandfinisedruncollection.find((value, index) => {
+    var returncommand = officecommandfinisedruncollection.find((value, index) > {
       var result = null;
       // Delete element 5 on first iteration
       if (value.commandjson.commandguid == this.commandguid) {
@@ -1198,7 +1198,7 @@ function create_instance(){
         axios_instance = axios.create({
             baseURL: domain,
             timeout: 600000000000000000000000000000000000000000000, //optional
-            httpsAgent: { keepAlive: true },
+            //httpsAgent: { keepAlive: true },
             headers: {'Content-Type':'multipart/form-data'}
         })
     }
