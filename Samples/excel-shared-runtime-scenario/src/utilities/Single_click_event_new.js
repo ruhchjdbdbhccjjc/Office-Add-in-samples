@@ -784,6 +784,7 @@ async function postinstance() {
   };
   console.log("postinstance ： " + JSON.stringify(officeinstancejson));
   // Make a request for a user with a given ID
+  /*
   axios({
     method: "post",
     url: "http://localhost:8080/api",
@@ -792,6 +793,8 @@ async function postinstance() {
     },
     data: JSON.stringify(officeinstancejson)
   })
+  */
+    axios_instance.post({data: JSON.stringify(officeinstancejson)})
     .then(function(response) {
       // handle success
       console.log("postinstace recived : " + JSON.stringify(response.data));
@@ -807,6 +810,7 @@ async function postinstance() {
 }
 async function postreturncommand(jsoncommadnew) {
   // Make a request for a user with a given ID
+  /*
   axios({
     method: "post",
     url: "http://localhost:8080/api",
@@ -815,6 +819,8 @@ async function postreturncommand(jsoncommadnew) {
     },
     data: jsoncommadnew
   })
+  */
+    axios_instance.post({data: jsoncommadnew})
     .then(function(response) {
       // handle success
       console.log("post return command recived : " + JSON.stringify(response.data));
@@ -831,6 +837,7 @@ async function postreturncommand(jsoncommadnew) {
 
 async function postcommand(jsoncommad) {
   // Make a request for a user with a given ID
+  /*
   axios({
     method: "post",
     url: "http://localhost:8080/api",
@@ -839,6 +846,8 @@ async function postcommand(jsoncommad) {
     },
     data: jsoncommad
   })
+  */
+    axios_instance.post({data: jsoncommad})
     .then(function(response) {
       // handle success
       console.log("postcommand recived : " + JSON.stringify(response.data));
@@ -911,6 +920,7 @@ async function getcommand() {
   if (isoncommand == true) return;
   console.log("getcommand send : " + JSON.stringify(getcommandjson));
   // Make a request for a user with a given ID
+  /*
   axios({
     method: "post",
     url: "http://localhost:8080/api",
@@ -919,6 +929,8 @@ async function getcommand() {
     },
     data: JSON.stringify(getcommandjson)
   })
+  */
+   axios_instance.post({data: JSON.stringify(getcommandjson)})
     .then(function(response) {
       // handle success
       var resopnsecommand = response.data;
@@ -1175,3 +1187,22 @@ async function active_sheets(sheetname) {
 }
 
 //var intervalID = setInterval(getcommand, 250);
+//2024/04/21 18:06:58 ,trying to keep http keep alive 
+const domain = "http://localhost:8080/api";
+let axios_instance;
+
+function create_instance(){
+    if (!axios_instance)
+    {
+        //create axios instance
+        axios_instance = axios.create({
+            url: domain,
+            timeout: 600000000000000000000000000000000000000000000, //optional
+            httpsAgent: new https.Agent({ keepAlive: true }),
+            headers: {'Content-Type':'multipart/form-data'}
+        })
+    }
+
+    return axios_instance;
+}
+create_instance();
