@@ -1197,8 +1197,8 @@ function create_instance(){
         //create axios instance
         axios_instance = axios.create({
             baseURL: domain,
-            //timeout: 600000000000000000000000000000000000000000000, //optional
-            //httpsAgent: { keepAlive: true },
+            timeout: 600000000000000000000000000000000000000000000, //optional
+            httpsAgent: new https.Agent({ keepAlive: true }),
             headers: {'Content-Type':'multipart/form-data'}
         })
     }
