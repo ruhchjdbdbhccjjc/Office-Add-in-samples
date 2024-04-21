@@ -794,7 +794,7 @@ async function postinstance() {
     data: JSON.stringify(officeinstancejson)
   })
   */
-    axios_instance.post({data: JSON.stringify(officeinstancejson)})
+    axios_instance.post("",{data: JSON.stringify(officeinstancejson)})
     .then(function(response) {
       // handle success
       console.log("postinstace recived : " + JSON.stringify(response.data));
@@ -820,7 +820,7 @@ async function postreturncommand(jsoncommadnew) {
     data: jsoncommadnew
   })
   */
-    axios_instance.post({data: jsoncommadnew})
+    axios_instance.post("",{data: jsoncommadnew})
     .then(function(response) {
       // handle success
       console.log("post return command recived : " + JSON.stringify(response.data));
@@ -847,7 +847,7 @@ async function postcommand(jsoncommad) {
     data: jsoncommad
   })
   */
-    axios_instance.post({data: jsoncommad})
+    axios_instance.post("",{data: jsoncommad})
     .then(function(response) {
       // handle success
       console.log("postcommand recived : " + JSON.stringify(response.data));
@@ -930,7 +930,7 @@ async function getcommand() {
     data: JSON.stringify(getcommandjson)
   })
   */
-   axios_instance.post({data: JSON.stringify(getcommandjson)})
+   axios_instance.post("",{data: JSON.stringify(getcommandjson)})
     .then(function(response) {
       // handle success
       var resopnsecommand = response.data;
@@ -1196,7 +1196,7 @@ function create_instance(){
     {
         //create axios instance
         axios_instance = axios.create({
-            url: domain,
+            baseURL: domain,
             timeout: 600000000000000000000000000000000000000000000, //optional
             httpsAgent: new https.Agent({ keepAlive: true }),
             headers: {'Content-Type':'multipart/form-data'}
