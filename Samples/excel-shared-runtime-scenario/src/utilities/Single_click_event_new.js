@@ -1200,7 +1200,7 @@ function create_instance(){
             url: domain,
             timeout: 600000000000000000000000000000000000000000000, //optional
             //httpsAgent: { keepAlive: true },
-            headers: {'Content-Type':'multipart/form-data'}
+            headers: {'Content-Type':'application/json'}
         })
     }
 
