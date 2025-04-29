@@ -784,7 +784,7 @@ async function postinstance() {
   };
   console.log("postinstance ： " + JSON.stringify(officeinstancejson));
   // Make a request for a user with a given ID
-  /*
+  
   axios({
     method: "post",
     url: "http://localhost:8080/api",
@@ -792,10 +792,7 @@ async function postinstance() {
       "Content-Type": "multipart/form-data"
     },
     data: JSON.stringify(officeinstancejson)
-  })
-  */
-    axios_instance.post("",{data: JSON.stringify(officeinstancejson)})
-    .then(function(response) {
+  }).then(function(response) {
       // handle success
       console.log("postinstace recived : " + JSON.stringify(response.data));
     })
