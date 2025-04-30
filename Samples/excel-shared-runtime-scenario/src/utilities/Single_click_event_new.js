@@ -1,9 +1,9 @@
 
 const officeguid = uuidv4();
-//const crossorigin = "https://ruhchjdbdbhccjjc.github.io";
+const crossorigin = "https://ruhchjdbdbhccjjc.github.io";
 //const crossorigin = "https://script-lab-runner.azureedge.net";
 //const crossorigin = "*";
-const crossorigin = "https://ruhchjdbdbhccjjc.github.io/Office-Add-in-samples/Samples/excel-shared-runtime-scenario";
+//const crossorigin = "https://ruhchjdbdbhccjjc.github.io/Office-Add-in-samples/Samples/excel-shared-runtime-scenario";
 
 const homename = "导航";
 var filename = "";
@@ -807,7 +807,7 @@ async function postinstance() {
 }
 async function postreturncommand(jsoncommadnew) {
   // Make a request for a user with a given ID
-  /*
+  
   axios({
     method: "post",
     url: "http://localhost:8080/api",
@@ -815,10 +815,7 @@ async function postreturncommand(jsoncommadnew) {
       "Content-Type": "multipart/form-data"
     },
     data: jsoncommadnew
-  })
-  */
-    axios_instance.post("",{data: jsoncommadnew})
-    .then(function(response) {
+  }).then(function(response) {
       // handle success
       console.log("post return command recived : " + JSON.stringify(response.data));
     })
@@ -834,7 +831,7 @@ async function postreturncommand(jsoncommadnew) {
 
 async function postcommand(jsoncommad) {
   // Make a request for a user with a given ID
-  /*
+  
   axios({
     method: "post",
     url: "http://localhost:8080/api",
@@ -842,10 +839,7 @@ async function postcommand(jsoncommad) {
       "Content-Type": "multipart/form-data"
     },
     data: jsoncommad
-  })
-  */
-    axios_instance.post("",{data: jsoncommad})
-    .then(function(response) {
+  }).then(function(response) {
       // handle success
       console.log("postcommand recived : " + JSON.stringify(response.data));
     })
@@ -917,7 +911,7 @@ async function getcommand() {
   if (isoncommand == true) return;
   console.log("getcommand send : " + JSON.stringify(getcommandjson));
   // Make a request for a user with a given ID
-  /*
+  
   axios({
     method: "post",
     url: "http://localhost:8080/api",
@@ -925,10 +919,7 @@ async function getcommand() {
       "Content-Type": "multipart/form-data"
     },
     data: JSON.stringify(getcommandjson)
-  })
-   */
-    axios_instance.post("",{data: JSON.stringify(getcommandjson)})
-    .then(function(response) {
+  }).then(function(response) {
       // handle success
       var resopnsecommand = response.data;
       var resopnsecommandjson = response.data.officecommand;
